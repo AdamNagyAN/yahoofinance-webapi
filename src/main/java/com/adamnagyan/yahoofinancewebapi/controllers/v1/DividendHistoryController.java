@@ -1,6 +1,7 @@
 package com.adamnagyan.yahoofinancewebapi.controllers.v1;
 
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendHistoryDto;
+import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 import com.adamnagyan.yahoofinancewebapi.services.history.DividendHistoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class DividendHistoryController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public DividendHistoryDto getDividendHistoryBySymbol(@PathVariable("symbol") String symbol, @RequestParam(required = false) String timeFrame) throws IOException {
+  public DividendHistoryDto getDividendHistoryBySymbol(@PathVariable("symbol") String symbol, @RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
     if (timeFrame == null) {
       return dividendHistoryService.findStockByTicker(symbol);
     }
