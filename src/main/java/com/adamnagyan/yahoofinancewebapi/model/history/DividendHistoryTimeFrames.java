@@ -1,6 +1,5 @@
 package com.adamnagyan.yahoofinancewebapi.model.history;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +8,6 @@ import lombok.Getter;
 public enum DividendHistoryTimeFrames {
   Y1("1y", -1), Y3("3y", -3), Y5("5y", -5), Y10("10y", -10), MAX("max", -1000);
 
-  @NotNull
   private final String name;
   private int value;
 
