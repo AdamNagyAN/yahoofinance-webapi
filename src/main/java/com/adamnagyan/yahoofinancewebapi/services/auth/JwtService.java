@@ -1,10 +1,11 @@
-package com.adamnagyan.yahoofinancewebapi.configurations;
+package com.adamnagyan.yahoofinancewebapi.services.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@NoArgsConstructor
 public class JwtService {
 
   private static final String SECRET_KEY = "67566B59703373367639792442264528482B4D6251655468576D5A7134743777";
