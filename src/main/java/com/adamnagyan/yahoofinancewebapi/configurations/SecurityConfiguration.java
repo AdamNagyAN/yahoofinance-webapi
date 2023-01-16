@@ -25,7 +25,7 @@ public class SecurityConfiguration {
           "/v2/api-docs",
           "/webjars/**",
           "/api/v1/auth/**",
-          "api/v1/symbol/*/dividend-history/**"
+          "/api/v1/symbol/*/dividend-history/**"
   };
 
   @Bean
