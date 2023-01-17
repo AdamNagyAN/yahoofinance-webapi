@@ -3,9 +3,10 @@ package com.adamnagyan.yahoofinancewebapi.services.auth;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.AuthenticationRequestDto;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.AuthenticationResponseDto;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.RegisterRequestDto;
+import com.adamnagyan.yahoofinancewebapi.exceptions.UserAlreadyExistAuthenticationException;
 
 public interface AuthenticationService {
-  public AuthenticationResponseDto register(RegisterRequestDto request);
+  AuthenticationResponseDto register(RegisterRequestDto request) throws UserAlreadyExistAuthenticationException;
 
-  public AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
+  AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
 }

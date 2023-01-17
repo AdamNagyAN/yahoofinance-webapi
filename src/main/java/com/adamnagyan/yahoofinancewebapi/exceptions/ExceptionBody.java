@@ -16,5 +16,6 @@ public class ExceptionBody {
   @NonNull
   private Date timestamp;
   private String parameter;
+  private String message;
 
 }
