@@ -1,6 +1,6 @@
 package com.adamnagyan.yahoofinancewebapi.services.history;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.history.DividendHistoryMapper;
+import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.DividendHistoryMapper;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendHistoryDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 import com.adamnagyan.yahoofinancewebapi.model.history.DividendHistoryTimeFrames;
