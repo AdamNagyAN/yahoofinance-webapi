@@ -16,10 +16,13 @@ import java.util.List;
 @ControllerAdvice
 public class CustomExceptionHandler {
   @ExceptionHandler(BadRequestException.class)
-  public ResponseEntity<?> badRequestExceptionHandling() {
+  public ResponseEntity<?> badRequestExceptionHandling(BadRequestException ex) {
     return new ResponseEntity<>(
             new ExceptionBody(ErrorCode.OO_INVALID_ARGUMENT_ERROR,
-                    new Date()),
+                    new Date(),
+                    ex.getArgument(),
+                    ex.getMessage()
+            ),
             HttpStatus.BAD_REQUEST);
   }
 

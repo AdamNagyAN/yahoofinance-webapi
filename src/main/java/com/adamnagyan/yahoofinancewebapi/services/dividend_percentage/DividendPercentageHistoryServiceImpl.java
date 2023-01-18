@@ -26,15 +26,24 @@ public class DividendPercentageHistoryServiceImpl implements DividendPercentageH
   private final DividendHistoryService dividendHistoryService;
 
   @Override
-  public List<PriceDto> getPriceHistory(String symbol) throws IOException {
+  public List<PriceDto> getPriceHistory(String symbol) throws IOException, BadRequestException {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.YEAR, -6);
-    return dividendPercentageHistoryMapper.toPriceListDto(YahooFinance.get(symbol).getHistory(cal, Interval.DAILY));
+
+    Stock stock = YahooFinance.get(symbol);
+    if (stock == null) {
+      throw new BadRequestException("symbol", "Symbol was not found!");
+    }
+
+    return dividendPercentageHistoryMapper.toPriceListDto(stock.getHistory(cal, Interval.DAILY));
   }
 
   @Override
   public DividendPercentageHistoryDto getDividendPercentageHistoryDto(String symbol) throws IOException, BadRequestException {
     Stock stock = YahooFinance.get(symbol);
+    if (stock == null) {
+      throw new BadRequestException("symbol", "Symbol was not found!");
+    }
     List<PriceDto> prices = getPriceHistory(symbol);
     List<DividendDto> dividendDtoList = dividendHistoryService.findStockByTicker(symbol, "5y").getHistoricalDividends();
     int currentIndex = 0;
