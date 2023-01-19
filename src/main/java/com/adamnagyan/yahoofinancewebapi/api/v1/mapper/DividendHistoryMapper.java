@@ -1,4 +1,4 @@
-package com.adamnagyan.yahoofinancewebapi.api.v1.mapper.history;
+package com.adamnagyan.yahoofinancewebapi.api.v1.mapper;
 
 
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendDto;

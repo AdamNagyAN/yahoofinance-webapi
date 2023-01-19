@@ -1,7 +1,13 @@
 package com.adamnagyan.yahoofinancewebapi.exceptions;
 
+import lombok.Getter;
+
+@Getter
 public class BadRequestException extends Exception {
-  public BadRequestException(String message) {
+  private final String argument;
+
+  public BadRequestException(String argument, String message) {
     super(message);
+    this.argument = argument;
   }
 }

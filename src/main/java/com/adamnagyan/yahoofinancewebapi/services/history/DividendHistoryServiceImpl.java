@@ -1,6 +1,6 @@
 package com.adamnagyan.yahoofinancewebapi.services.history;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.history.DividendHistoryMapper;
+import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.DividendHistoryMapper;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendHistoryDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 import com.adamnagyan.yahoofinancewebapi.model.history.DividendHistoryTimeFrames;
@@ -23,14 +23,11 @@ public class DividendHistoryServiceImpl implements DividendHistoryService {
   @Override
   public DividendHistoryDto findStockByTicker(String ticker, String timeframe) throws IOException, BadRequestException {
     Calendar cal = Calendar.getInstance();
-    if (DividendHistoryTimeFrames.getTimeFrameByName(timeframe) == null) {
-      throw new BadRequestException("timeFrame");
-    }
     cal.add(Calendar.YEAR, DividendHistoryTimeFrames.getTimeFrameByName(timeframe).getValue());
 
     Stock stock = YahooFinance.get(ticker, cal);
     if (stock == null) {
-      throw new BadRequestException("ticker");
+      throw new BadRequestException("symbol", "Symbol was not found!");
     }
 
     DividendHistoryDto result = dividendHistoryMapper.toDTO(stock, cal);

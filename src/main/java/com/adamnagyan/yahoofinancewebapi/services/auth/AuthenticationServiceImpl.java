@@ -1,6 +1,6 @@
 package com.adamnagyan.yahoofinancewebapi.services.auth;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.auth.AuthenticationMapper;
+import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.AuthenticationRequestMapper;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.AuthenticationRequestDto;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.AuthenticationResponseDto;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.RegisterRequestDto;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-  private final AuthenticationMapper authenticationMapper;
+  private final AuthenticationRequestMapper authenticationMapper;
   private final AuthenticationManager authenticationManager;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;

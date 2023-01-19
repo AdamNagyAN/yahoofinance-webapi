@@ -2,7 +2,6 @@ package com.adamnagyan.yahoofinancewebapi.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,10 +16,13 @@ import java.util.List;
 @ControllerAdvice
 public class CustomExceptionHandler {
   @ExceptionHandler(BadRequestException.class)
-  public ResponseEntity<?> badRequestExceptionHandling() {
+  public ResponseEntity<?> badRequestExceptionHandling(BadRequestException ex) {
     return new ResponseEntity<>(
             new ExceptionBody(ErrorCode.OO_INVALID_ARGUMENT_ERROR,
-                    new Date()),
+                    new Date(),
+                    ex.getArgument(),
+                    ex.getMessage()
+            ),
             HttpStatus.BAD_REQUEST);
   }
 
@@ -29,14 +31,6 @@ public class CustomExceptionHandler {
     return new ResponseEntity<>(
             new ExceptionBody(ErrorCode.OO_GENERAL_ERROR, new Date()),
             HttpStatus.BAD_REQUEST
-    );
-  }
-
-  @ExceptionHandler(BadCredentialsException.class)
-  public ResponseEntity<?> badCredentialsExceptionHandling() {
-    return new ResponseEntity<>(
-            new ExceptionBody(ErrorCode.OO_USER_NOT_FOUND, new Date()),
-            HttpStatus.NOT_FOUND
     );
   }
 

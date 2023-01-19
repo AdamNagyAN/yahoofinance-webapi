@@ -1,5 +1,6 @@
 package com.adamnagyan.yahoofinancewebapi.model.history;
 
+import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,12 +16,12 @@ public enum DividendHistoryTimeFrames {
     this.name = name;
   }
 
-  public static DividendHistoryTimeFrames getTimeFrameByName(String name) {
+  public static DividendHistoryTimeFrames getTimeFrameByName(String name) throws BadRequestException {
     for (DividendHistoryTimeFrames timeFrame : DividendHistoryTimeFrames.values()) {
       if (timeFrame.name.equals(name)) {
         return timeFrame;
       }
     }
-    return null;
+    throw new BadRequestException("timeFrame", "Timeframe is not valid!");
   }
 }
