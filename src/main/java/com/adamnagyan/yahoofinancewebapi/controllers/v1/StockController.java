@@ -31,11 +31,11 @@ public class StockController {
 
   @GetMapping("prices")
   @ResponseStatus(HttpStatus.OK)
-  public List<PriceDto> getPriceList(String symbol) throws IOException, BadRequestException {
+  public List<PriceDto> getPriceList(@PathVariable("symbol") String symbol) throws IOException, BadRequestException {
     return dividendPercentageHistoryService.getPriceHistory(symbol);
   }
 
-  @GetMapping(("dividend-history"))
+  @GetMapping("dividend-history")
   @ResponseStatus(HttpStatus.OK)
   public DividendHistoryDto getDividendHistoryBySymbol(@PathVariable("symbol") String symbol, @RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
     if (timeFrame == null) {
@@ -46,7 +46,7 @@ public class StockController {
 
   @GetMapping("dividend-percentage-history")
   @ResponseStatus(HttpStatus.OK)
-  public DividendPercentageHistoryDto getDividendPercentageHistory(String symbol) throws IOException, BadRequestException {
+  public DividendPercentageHistoryDto getDividendPercentageHistory(@PathVariable("symbol") String symbol) throws IOException, BadRequestException {
     return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol);
   }
 }
