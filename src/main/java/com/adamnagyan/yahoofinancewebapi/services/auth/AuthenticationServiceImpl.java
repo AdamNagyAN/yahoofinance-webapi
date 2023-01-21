@@ -14,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -37,7 +39,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .role(Role.USER)
             .build();
     userRepository.save(user);
-    String jwtToken = jwtService.generateToken(user);
+    HashMap<String, Object> extraClaims = new HashMap<>();
+    extraClaims.put("firstname", user.getFirstName());
+    extraClaims.put("lastname", user.getLastName());
+    String jwtToken = jwtService.generateToken(extraClaims, user);
     return authenticationMapper.authenticationResponseToDTO(jwtToken);
   }
 
@@ -45,7 +50,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   public AuthenticationResponseDto authenticate(AuthenticationRequestDto request) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
     User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-    String jwtToken = jwtService.generateToken(user);
+    HashMap<String, Object> extraClaims = new HashMap<>();
+    extraClaims.put("firstname", user.getFirstName());
+    extraClaims.put("lastname", user.getLastName());
+    String jwtToken = jwtService.generateToken(extraClaims, user);
     return authenticationMapper.authenticationResponseToDTO(jwtToken);
   }
 }

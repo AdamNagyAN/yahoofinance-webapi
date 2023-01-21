@@ -6,8 +6,14 @@ import com.adamnagyan.yahoofinancewebapi.api.v1.model.dividend_percentage.Divide
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.dividend_percentage.PriceDto;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
+import com.adamnagyan.yahoofinancewebapi.model.history.StockTimeFrames;
 import com.adamnagyan.yahoofinancewebapi.services.history.DividendHistoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
@@ -20,15 +26,23 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Caching
 public class DividendPercentageHistoryServiceImpl implements DividendPercentageHistoryService {
-
+  public static final String PRICE_KEY = "price-key";
   private final DividendPercentageHistoryMapper dividendPercentageHistoryMapper;
   private final DividendHistoryService dividendHistoryService;
+  private final ApplicationContext applicationContext;
+
+
+  private DividendPercentageHistoryService getDividendPercentageHistoryService() {
+    return applicationContext.getBean(DividendPercentageHistoryService.class);
+  }
 
   @Override
+  @Cacheable(value = PRICE_KEY, key = "#symbol")
   public List<PriceDto> getPriceHistory(String symbol) throws IOException, BadRequestException {
     Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.YEAR, -6);
+    cal.add(Calendar.YEAR, StockTimeFrames.MAX.getValue());
 
     Stock stock = YahooFinance.get(symbol);
     if (stock == null) {
@@ -38,14 +52,22 @@ public class DividendPercentageHistoryServiceImpl implements DividendPercentageH
     return dividendPercentageHistoryMapper.toPriceListDto(stock.getHistory(cal, Interval.DAILY));
   }
 
+  @CacheEvict(value = PRICE_KEY, allEntries = true)
+  @Scheduled(fixedRateString = "${caching.spring.price-history}")
+  public void emptyPriceCache() {
+  }
+
+
   @Override
-  public DividendPercentageHistoryDto getDividendPercentageHistoryDto(String symbol) throws IOException, BadRequestException {
+  public DividendPercentageHistoryDto getDividendPercentageHistoryDto(String symbol, String timeframe) throws IOException, BadRequestException {
     Stock stock = YahooFinance.get(symbol);
     if (stock == null) {
       throw new BadRequestException("symbol", "Symbol was not found!");
     }
-    List<PriceDto> prices = getPriceHistory(symbol);
-    List<DividendDto> dividendDtoList = dividendHistoryService.findStockByTicker(symbol, "5y").getHistoricalDividends();
+
+
+    List<PriceDto> prices = getDividendPercentageHistoryService().getPriceHistory(symbol);
+    List<DividendDto> dividendDtoList = dividendHistoryService.findStockByTicker(symbol, timeframe).getHistoricalDividends();
     int currentIndex = 0;
     List<DividendPercentageDto> dividendPercentageDtoList = new ArrayList<>();
 
@@ -62,7 +84,7 @@ public class DividendPercentageHistoryServiceImpl implements DividendPercentageH
     double currentDividendYield = stock.getDividend(true).getAnnualYieldPercent().doubleValue();
     double averageDividendYield = dividendPercentageDtoList.stream().mapToDouble(DividendPercentageDto::getDividendPercentage).average().orElse(Double.NaN);
 
-
     return dividendPercentageHistoryMapper.toDividendPercentageHistoryDto(dividendPercentageDtoList, currentDividendYield, averageDividendYield);
   }
+
 }

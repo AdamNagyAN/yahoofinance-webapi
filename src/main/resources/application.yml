@@ -18,3 +18,8 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
+
+caching:
+  spring:
+    dividend-history: 43200000
+    price-history: 43200000

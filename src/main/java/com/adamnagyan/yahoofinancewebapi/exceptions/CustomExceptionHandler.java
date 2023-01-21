@@ -2,6 +2,7 @@ package com.adamnagyan.yahoofinancewebapi.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -60,7 +61,7 @@ public class CustomExceptionHandler {
 
 
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
-  @ExceptionHandler(CredentialExpiredException.class)
+  @ExceptionHandler({CredentialExpiredException.class, BadCredentialsException.class})
   public ResponseEntity<?> invalidCredentialsExceptionHandling() {
     return new ResponseEntity<>(
             new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
