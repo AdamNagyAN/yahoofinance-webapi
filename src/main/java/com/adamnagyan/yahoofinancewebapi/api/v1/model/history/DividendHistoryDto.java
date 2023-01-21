@@ -8,8 +8,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class DividendHistoryDto {
-  private String symbol;
-  private String companyName;
   private List<DividendDto> historicalDividends;
   private List<String> validTimeFrames;
 }

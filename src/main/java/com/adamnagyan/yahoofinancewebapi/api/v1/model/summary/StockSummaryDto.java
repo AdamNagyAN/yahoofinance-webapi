@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @Data
@@ -16,7 +16,7 @@ public class StockSummaryDto {
   private BigDecimal pe;
   private BigDecimal oneYearTargetPrice;
   private BigDecimal price;
-  private Calendar earningsAnnouncement;
+  private LocalDate earningsAnnouncement;
 
   private BigDecimal annualDividendYield;
   private BigDecimal annualDividendYieldPercent;
