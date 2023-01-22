@@ -23,3 +23,6 @@ caching:
   spring:
     dividend-history: 43200000
     price-history: 43200000
+
+external-apis:
+  yahoofinance-cashflow: https://query1.finance.yahoo.com/v10/finance/quoteSummary/

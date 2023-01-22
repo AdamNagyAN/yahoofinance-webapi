@@ -1,4 +1,4 @@
-package com.adamnagyan.yahoofinancewebapi.model.history;
+package com.adamnagyan.yahoofinancewebapi.model.stock;
 
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package com.adamnagyan.yahoofinancewebapi.api.v1.mapper;
 
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendHistoryDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.DividendDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.DividendHistoryDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

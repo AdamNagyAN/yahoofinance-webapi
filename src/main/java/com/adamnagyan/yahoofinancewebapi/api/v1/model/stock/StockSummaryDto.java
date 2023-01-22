@@ -1,4 +1,4 @@
-package com.adamnagyan.yahoofinancewebapi.api.v1.model.summary;
+package com.adamnagyan.yahoofinancewebapi.api.v1.model.stock;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
