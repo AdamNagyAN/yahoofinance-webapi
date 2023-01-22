@@ -48,8 +48,8 @@ public class StockController {
   @ResponseStatus(HttpStatus.OK)
   public DividendPercentageHistoryDto getDividendPercentageHistory(@PathVariable("symbol") String symbol, @RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
     if (timeFrame == null) {
-      return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, timeFrame);
+      return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, "max");
     }
-    return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, "max");
+    return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, timeFrame);
   }
 }
