@@ -21,8 +21,10 @@ import yahoofinance.histquotes.Interval;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -72,19 +74,25 @@ public class DividendPercentageHistoryServiceImpl implements DividendPercentageH
     List<DividendPercentageDto> dividendPercentageDtoList = new ArrayList<>();
 
     for (PriceDto price : prices) {
-      while (currentIndex - 1 >= dividendDtoList.size() && price.getDate().isAfter(dividendDtoList.get(currentIndex + 1).getDate())) {
+      while (currentIndex < dividendDtoList.size() - 1 && price.getDate().isAfter(dividendDtoList.get(currentIndex + 1).getDate())) {
+        System.out.println(currentIndex + "price: " + price.getDate() + "div:" + dividendDtoList.get(currentIndex).getDate());
         currentIndex++;
       }
-      dividendPercentageDtoList.add(dividendPercentageHistoryMapper.toDividendPercentageDto(
-              dividendDtoList.get(currentIndex).getAdjDividend() * 4 / price.getPrice() * 100,
-              price.getDate()
-      ));
+      if (price.getDate().isAfter(dividendDtoList.get(currentIndex).getDate())) {
+        dividendPercentageDtoList.add(dividendPercentageHistoryMapper.toDividendPercentageDto(
+                dividendDtoList.get(currentIndex).getAdjDividend() * 4 / price.getPrice() * 100,
+                price.getDate()));
+      }
     }
 
     double currentDividendYield = stock.getDividend(true).getAnnualYieldPercent().doubleValue();
     double averageDividendYield = dividendPercentageDtoList.stream().mapToDouble(DividendPercentageDto::getDividendPercentage).average().orElse(Double.NaN);
 
-    return dividendPercentageHistoryMapper.toDividendPercentageHistoryDto(dividendPercentageDtoList, currentDividendYield, averageDividendYield);
+    List<String> validTimeFrames = Arrays.stream(StockTimeFrames.values())
+            .map(StockTimeFrames::getName)
+            .collect(Collectors.toList());
+
+    return dividendPercentageHistoryMapper.toDividendPercentageHistoryDto(dividendPercentageDtoList, currentDividendYield, averageDividendYield, validTimeFrames);
   }
 
 }

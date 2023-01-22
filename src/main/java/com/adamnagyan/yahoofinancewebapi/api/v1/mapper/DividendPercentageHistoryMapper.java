@@ -19,7 +19,7 @@ public interface DividendPercentageHistoryMapper {
   @Mapping(target = "historicalDividendPercentages", source = "dividendPercentageDtoList")
   @Mapping(target = "currentDividendPercentage", source = "currentDividendYield")
   @Mapping(target = "averageDividendPercentage", source = "averageDividendYield")
-  DividendPercentageHistoryDto toDividendPercentageHistoryDto(List<DividendPercentageDto> dividendPercentageDtoList, double currentDividendYield, double averageDividendYield);
+  DividendPercentageHistoryDto toDividendPercentageHistoryDto(List<DividendPercentageDto> dividendPercentageDtoList, double currentDividendYield, double averageDividendYield, List<String> validTimeFrames);
 
   DividendPercentageDto toDividendPercentageDto(double dividendPercentage, LocalDate date);
 
