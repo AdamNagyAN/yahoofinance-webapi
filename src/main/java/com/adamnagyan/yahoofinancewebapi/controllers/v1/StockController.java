@@ -1,13 +1,11 @@
 package com.adamnagyan.yahoofinancewebapi.controllers.v1;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.dividend_percentage.DividendPercentageHistoryDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.dividend_percentage.PriceDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendHistoryDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.summary.StockSummaryDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.*;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
-import com.adamnagyan.yahoofinancewebapi.services.dividend_percentage.DividendPercentageHistoryService;
-import com.adamnagyan.yahoofinancewebapi.services.history.DividendHistoryService;
-import com.adamnagyan.yahoofinancewebapi.services.summary.StockSummaryService;
+import com.adamnagyan.yahoofinancewebapi.services.stock.DividendHistoryService;
+import com.adamnagyan.yahoofinancewebapi.services.stock.DividendPercentageHistoryService;
+import com.adamnagyan.yahoofinancewebapi.services.stock.FinancialStatementsService;
+import com.adamnagyan.yahoofinancewebapi.services.stock.StockSummaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +20,7 @@ public class StockController {
   private final DividendHistoryService dividendHistoryService;
   private final DividendPercentageHistoryService dividendPercentageHistoryService;
   private final StockSummaryService stockSummaryService;
+  private final FinancialStatementsService financialStatementsService;
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
@@ -51,5 +50,11 @@ public class StockController {
       return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, "max");
     }
     return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, timeFrame);
+  }
+
+  @GetMapping("financials")
+  @ResponseStatus(HttpStatus.OK)
+  public FinancialDataDto getCashFlowStatement(@PathVariable("symbol") String symbol) {
+    return financialStatementsService.getFinancialData(symbol);
   }
 }

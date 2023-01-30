@@ -1,6 +1,6 @@
-package com.adamnagyan.yahoofinancewebapi.services.summary;
+package com.adamnagyan.yahoofinancewebapi.services.stock;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.summary.StockSummaryDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.StockSummaryDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 
 import java.io.IOException;

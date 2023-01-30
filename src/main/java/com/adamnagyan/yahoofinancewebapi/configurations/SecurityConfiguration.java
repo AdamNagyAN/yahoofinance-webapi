@@ -28,6 +28,7 @@ public class SecurityConfiguration {
           "/webjars/**",
           "/api/v1/auth/**",
           "/api/v1/symbol/**",
+          "/h2-console/**"
   };
 
 

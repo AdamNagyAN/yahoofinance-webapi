@@ -1,7 +1,7 @@
-package com.adamnagyan.yahoofinancewebapi.services.summary;
+package com.adamnagyan.yahoofinancewebapi.services.stock;
 
 import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.StockSummaryMapper;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.summary.StockSummaryDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.StockSummaryDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,6 @@ public class StockSummaryServiceImpl implements StockSummaryService {
     if (stock == null) {
       throw new BadRequestException("symbol", "Symbol was not found");
     }
-    System.out.println(stock.getDividend(true));
     return stockSummaryMapper.stockToStockSummaryDto(stock, stock.getStats(true), stock.getDividend());
   }
 }

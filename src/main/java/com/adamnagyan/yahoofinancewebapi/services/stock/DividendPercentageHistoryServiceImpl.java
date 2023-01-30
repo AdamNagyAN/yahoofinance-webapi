@@ -1,13 +1,12 @@
-package com.adamnagyan.yahoofinancewebapi.services.dividend_percentage;
+package com.adamnagyan.yahoofinancewebapi.services.stock;
 
 import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.DividendPercentageHistoryMapper;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.dividend_percentage.DividendPercentageDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.dividend_percentage.DividendPercentageHistoryDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.dividend_percentage.PriceDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.DividendDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.DividendPercentageDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.DividendPercentageHistoryDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.PriceDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
-import com.adamnagyan.yahoofinancewebapi.model.history.StockTimeFrames;
-import com.adamnagyan.yahoofinancewebapi.services.history.DividendHistoryService;
+import com.adamnagyan.yahoofinancewebapi.model.stock.StockTimeFrames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -75,7 +74,6 @@ public class DividendPercentageHistoryServiceImpl implements DividendPercentageH
 
     for (PriceDto price : prices) {
       while (currentIndex < dividendDtoList.size() - 1 && price.getDate().isAfter(dividendDtoList.get(currentIndex + 1).getDate())) {
-        System.out.println(currentIndex + "price: " + price.getDate() + "div:" + dividendDtoList.get(currentIndex).getDate());
         currentIndex++;
       }
       if (price.getDate().isAfter(dividendDtoList.get(currentIndex).getDate())) {
@@ -94,5 +92,6 @@ public class DividendPercentageHistoryServiceImpl implements DividendPercentageH
 
     return dividendPercentageHistoryMapper.toDividendPercentageHistoryDto(dividendPercentageDtoList, currentDividendYield, averageDividendYield, validTimeFrames);
   }
+
 
 }

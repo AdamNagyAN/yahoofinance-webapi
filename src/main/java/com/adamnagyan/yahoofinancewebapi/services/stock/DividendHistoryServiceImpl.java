@@ -1,9 +1,9 @@
-package com.adamnagyan.yahoofinancewebapi.services.history;
+package com.adamnagyan.yahoofinancewebapi.services.stock;
 
 import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.DividendHistoryMapper;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendHistoryDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.DividendHistoryDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
-import com.adamnagyan.yahoofinancewebapi.model.history.StockTimeFrames;
+import com.adamnagyan.yahoofinancewebapi.model.stock.StockTimeFrames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

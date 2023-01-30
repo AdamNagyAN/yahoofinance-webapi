@@ -1,6 +1,6 @@
 package com.adamnagyan.yahoofinancewebapi.api.v1.mapper;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.summary.StockSummaryDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.StockSummaryDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

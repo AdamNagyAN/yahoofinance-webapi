@@ -61,11 +61,20 @@ public class CustomExceptionHandler {
 
 
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
-  @ExceptionHandler({CredentialExpiredException.class, BadCredentialsException.class})
-  public ResponseEntity<?> invalidCredentialsExceptionHandling() {
+  @ExceptionHandler(CredentialExpiredException.class)
+  public ResponseEntity<?> credentialsExpiredExceptionHandling() {
     return new ResponseEntity<>(
             new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
             HttpStatus.UNAUTHORIZED
+    );
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<?> badCredentialsExceptionHandling() {
+    return new ResponseEntity<>(
+            new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
+            HttpStatus.BAD_REQUEST
     );
   }
 

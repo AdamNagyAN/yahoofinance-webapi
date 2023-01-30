@@ -23,3 +23,11 @@ caching:
   spring:
     dividend-history: 43200000
     price-history: 43200000
+
+external-apis:
+  yahoofinance-cashflow: https://query1.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=cashflowStatementHistory
+  yahoofinance-cashflow-quarterly: https://query1.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?modules=cashflowStatementHistoryQuarterly
+  yahoofinance-income-statements: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=incomeStatementHistory
+  yahoofinance-income-statements-quarterly: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=incomeStatementHistoryQuarterly
+  yahoofinance-balance-sheet: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=balanceSheetHistory
+  yahoofinance-balance-sheet-quarterly: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=balanceSheetHistoryQuarterly

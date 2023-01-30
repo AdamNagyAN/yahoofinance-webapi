@@ -1,6 +1,6 @@
-package com.adamnagyan.yahoofinancewebapi.services.history;
+package com.adamnagyan.yahoofinancewebapi.services.stock;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.history.DividendHistoryDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.stock.DividendHistoryDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 
 import java.io.IOException;
