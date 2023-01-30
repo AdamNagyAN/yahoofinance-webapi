@@ -52,9 +52,9 @@ public class StockController {
     return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, timeFrame);
   }
 
-  @GetMapping("financials/cash-flow")
+  @GetMapping("financials")
   @ResponseStatus(HttpStatus.OK)
-  public CashflowStatementsDto getCashFlowStatement(@PathVariable("symbol") String symbol) {
-    return financialStatementsService.getStockCashFlowStatement(symbol);
+  public FinancialDataDto getCashFlowStatement(@PathVariable("symbol") String symbol) {
+    return financialStatementsService.getFinancialData(symbol);
   }
 }

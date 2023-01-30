@@ -2,19 +2,17 @@ package com.adamnagyan.yahoofinancewebapi.model.stock;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StockCashflowStatements {
-
+@ToString
+public class StockCashflowStatement {
   private Date endDate;
   private Long totalCashFromOperatingActivities = 0L;
   private Long netIncome = 0L;
@@ -32,8 +30,8 @@ public class StockCashflowStatements {
   private Long issuanceOfStock = 0L;
   private Long freeCashFlow = 0L;
 
-  public StockCashflowStatements add(StockCashflowStatements that) {
-    return StockCashflowStatements.builder()
+  public StockCashflowStatement add(StockCashflowStatement that) {
+    return StockCashflowStatement.builder()
             .endDate(this.endDate)
             .totalCashFromOperatingActivities(this.totalCashFromOperatingActivities + that.totalCashFromOperatingActivities)
             .netIncome(this.netIncome + that.netIncome)
