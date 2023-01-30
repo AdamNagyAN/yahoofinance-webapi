@@ -74,7 +74,6 @@ public class DividendPercentageHistoryServiceImpl implements DividendPercentageH
 
     for (PriceDto price : prices) {
       while (currentIndex < dividendDtoList.size() - 1 && price.getDate().isAfter(dividendDtoList.get(currentIndex + 1).getDate())) {
-        System.out.println(currentIndex + "price: " + price.getDate() + "div:" + dividendDtoList.get(currentIndex).getDate());
         currentIndex++;
       }
       if (price.getDate().isAfter(dividendDtoList.get(currentIndex).getDate())) {

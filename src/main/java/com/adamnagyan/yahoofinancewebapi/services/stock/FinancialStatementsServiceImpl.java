@@ -24,13 +24,11 @@ public class FinancialStatementsServiceImpl implements FinancialStatementsServic
     if (stock == null) {
       throw new BadRequestException("symbol", "Symbol was not found!");
     }
-    System.out.println(stockRepository.getCashFlowStatements(stock.getSymbol()));
-    System.out.println(financialStatementsMapper.toCashflowStatementDto(stockRepository.getCashFlowStatements(stock.getSymbol()).get(0)));
-    System.out.println("Test");
     return financialStatementsMapper.toFinancialDataDto(
             0,
             stockRepository.getIncomeStatements(stock.getSymbol()),
-            stockRepository.getCashFlowStatements(stock.getSymbol())
+            stockRepository.getCashFlowStatements(stock.getSymbol()),
+            stockRepository.getBalanceSheets(stock.getSymbol())
     );
   }
 }

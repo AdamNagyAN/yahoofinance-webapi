@@ -22,7 +22,6 @@ public class StockSummaryServiceImpl implements StockSummaryService {
     if (stock == null) {
       throw new BadRequestException("symbol", "Symbol was not found");
     }
-    System.out.println(stock.getDividend(true));
     return stockSummaryMapper.stockToStockSummaryDto(stock, stock.getStats(true), stock.getDividend());
   }
 }

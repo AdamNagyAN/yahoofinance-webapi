@@ -125,9 +125,23 @@ public class StockRepositoryImpl implements StockRepository {
       ArrayNode balanceSheets = (ArrayNode) annualJson.get("quoteSummary").get("result").get(0).get("balanceSheetHistory").get("balanceSheetStatements");
       ArrayNode quarterlyBalanceSheets = (ArrayNode) quarterlyJson.get("quoteSummary").get("result").get(0).get("balanceSheetHistoryQuarterly").get("balanceSheetStatements");
       List<StockBalanceSheet> stockBalanceSheetsList = new ArrayList<>();
+
+      StockBalanceSheet ttmBalanceSheet = null;
+
+      for (JsonNode item : quarterlyBalanceSheets) {
+        StockBalanceSheet convertedValue = objectMapper.convertValue(item, StockBalanceSheet.class);
+        if (ttmBalanceSheet == null) {
+          ttmBalanceSheet = convertedValue;
+        } else {
+          ttmBalanceSheet.add(convertedValue);
+        }
+      }
+
       for (JsonNode item : balanceSheets) {
         stockBalanceSheetsList.add(objectMapper.convertValue(item, StockBalanceSheet.class));
       }
+
+      stockBalanceSheetsList.add(0, ttmBalanceSheet);
 
       return stockBalanceSheetsList;
     }

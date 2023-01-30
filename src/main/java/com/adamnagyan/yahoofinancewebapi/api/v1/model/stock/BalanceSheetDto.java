@@ -3,10 +3,12 @@ package com.adamnagyan.yahoofinancewebapi.api.v1.model.stock;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 public class BalanceSheetDto {
-  private String endDate;
+  private LocalDate endDate;
   private Long cash;
   private Long shortTermInvestments;
   private Long netReceivables;

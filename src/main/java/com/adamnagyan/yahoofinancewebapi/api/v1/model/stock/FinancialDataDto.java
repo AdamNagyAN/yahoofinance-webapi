@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class FinancialDataDto {
   private List<IncomeStatementDto> incomeStatements;
+  private List<BalanceSheetDto> balanceSheets;
   private List<CashflowStatementDto> cashFlowStatements;
-//  private List<BalanceSheetDto> balanceSheets;
 }
