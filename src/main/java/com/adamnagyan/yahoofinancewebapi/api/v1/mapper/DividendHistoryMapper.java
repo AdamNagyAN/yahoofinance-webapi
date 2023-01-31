@@ -10,6 +10,7 @@ import yahoofinance.histquotes2.HistoricalDividend;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DividendHistoryMapper {
@@ -18,7 +19,9 @@ public interface DividendHistoryMapper {
 
 
   @Mapping(target = "historicalDividends", source = "dividends")
-  DividendHistoryDto toDTO(Integer dummy, List<HistoricalDividend> dividends) throws IOException;
+  @Mapping(target = "validTimeFrames", source = "validTimeFrames")
+  @Mapping(target = "divGrowthRates", source = "divGrowthRates")
+  DividendHistoryDto toDTO(Integer dummy, List<DividendDto> dividends, List<String> validTimeFrames, Map<String, Double> divGrowthRates) throws IOException;
 
   List<DividendDto> toDividenDtoList(List<HistoricalDividend> dividends);
 
