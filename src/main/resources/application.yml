@@ -1,6 +1,12 @@
 #spring.datasource.url=jdbc:h2:mem:testdb
 
 spring:
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: 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
+    sender: raween2000+divinv@gmail.com
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -18,6 +24,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
+
+auth:
+  confirmation-token-expiration-minutes: 15
 
 caching:
   spring:
