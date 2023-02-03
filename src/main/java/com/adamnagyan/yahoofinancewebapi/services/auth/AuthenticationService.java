@@ -9,4 +9,6 @@ public interface AuthenticationService {
   AuthenticationResponseDto register(RegisterRequestDto request) throws UserAlreadyExistAuthenticationException;
 
   AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
+
+  void confirmRegistrationToken(String token);
 }

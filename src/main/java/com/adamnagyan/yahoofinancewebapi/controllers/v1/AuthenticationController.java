@@ -29,4 +29,10 @@ public class AuthenticationController {
   public AuthenticationResponseDto login(@Valid @RequestBody AuthenticationRequestDto request) {
     return service.authenticate(request);
   }
+
+  @PostMapping("/confirm")
+  @ResponseStatus(HttpStatus.OK)
+  public void confirm(@RequestParam("token") String token) {
+    service.confirmRegistrationToken(token);
+  }
 }
