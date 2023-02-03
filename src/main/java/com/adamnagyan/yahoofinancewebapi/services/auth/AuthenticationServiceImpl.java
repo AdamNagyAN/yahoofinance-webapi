@@ -5,14 +5,19 @@ import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.AuthenticationRequest
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.AuthenticationResponseDto;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.RegisterRequestDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.UserAlreadyExistAuthenticationException;
+import com.adamnagyan.yahoofinancewebapi.model.user.ConfirmationToken;
 import com.adamnagyan.yahoofinancewebapi.model.user.Role;
 import com.adamnagyan.yahoofinancewebapi.model.user.User;
 import com.adamnagyan.yahoofinancewebapi.repositories.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +27,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private final AuthenticationManager authenticationManager;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final ConfirmationTokenService confirmationTokenService;
   private final JwtService jwtService;
+
+  @Value("auth.confirmation-token-expiration-minutes")
+  private Integer confirmationTokenExpiry = 10;
 
   @Override
   public AuthenticationResponseDto register(RegisterRequestDto request) throws UserAlreadyExistAuthenticationException {
@@ -38,6 +47,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .build();
     userRepository.save(user);
     String jwtToken = jwtService.generateToken(user);
+    String token = UUID.randomUUID().toString();
+    ConfirmationToken confirmationToken = ConfirmationToken.builder()
+            .token(token)
+            .createdAt(LocalDateTime.now())
+            .expiresAt(LocalDateTime.now().plusMinutes(confirmationTokenExpiry))
+            .user(user)
+            .build();
+    confirmationTokenService.saveConfirmationToken(confirmationToken);
+    //TODO : send email
     return authenticationMapper.authenticationResponseToDTO(jwtToken);
   }
 

@@ -2,6 +2,7 @@ package com.adamnagyan.yahoofinancewebapi.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,7 +31,7 @@ public class CustomExceptionHandler {
   public ResponseEntity<?> generalExceptionHandling() {
     return new ResponseEntity<>(
             new ExceptionBody(ErrorCode.OO_GENERAL_ERROR, new Date()),
-            HttpStatus.BAD_REQUEST
+            HttpStatus.INTERNAL_SERVER_ERROR
     );
   }
 
@@ -66,6 +67,12 @@ public class CustomExceptionHandler {
             new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
             HttpStatus.UNAUTHORIZED
     );
+  }
+
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ExceptionHandler(DisabledException.class)
+  public ResponseEntity<?> disabledUserExceptionHandler() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_DISABLED_USER, new Date()), HttpStatus.FORBIDDEN);
   }
 
 
