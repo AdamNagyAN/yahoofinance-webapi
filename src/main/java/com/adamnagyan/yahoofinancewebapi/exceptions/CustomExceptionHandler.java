@@ -31,7 +31,7 @@ public class CustomExceptionHandler {
   public ResponseEntity<?> generalExceptionHandling() {
     return new ResponseEntity<>(
             new ExceptionBody(ErrorCode.OO_GENERAL_ERROR, new Date()),
-            HttpStatus.INTERNAL_SERVER_ERROR
+            HttpStatus.BAD_REQUEST
     );
   }
 
