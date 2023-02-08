@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -84,6 +85,12 @@ public class CustomExceptionHandler {
   @ExceptionHandler(DisabledException.class)
   public ResponseEntity<?> disabledUserExceptionHandler() {
     return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_DISABLED_USER, new Date()), HttpStatus.FORBIDDEN);
+  }
+
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ExceptionHandler(UsernameNotFoundException.class)
+  public ResponseEntity<?> userNotFoundException() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_NOT_FOUND, new Date()), HttpStatus.NOT_FOUND);
   }
 
   @ResponseStatus(HttpStatus.NOT_FOUND)

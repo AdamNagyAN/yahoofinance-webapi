@@ -1,5 +1,3 @@
-#spring.datasource.url=jdbc:h2:mem:testdb
-
 spring:
   mvc:
     pathmatch:
@@ -19,3 +17,6 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
+
+external-apis:
+  confirm-email: 'https://dividend-portfolio.netlify.app/login'

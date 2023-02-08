@@ -38,7 +38,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private final EmailService emailService;
   private final JwtService jwtService;
 
-
+  @Value("${external-apis.confirm-email}")
+  private String confirmLink;
   @Value("${auth.confirmation-token-expiration-minutes}")
   private Integer confirmationTokenExpiry = 15;
 
@@ -55,10 +56,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .role(Role.USER)
             .build();
     userRepository.save(user);
-    HashMap<String, Object> extraClaims = new HashMap<>();
-    extraClaims.put("firstname", user.getFirstName());
-    extraClaims.put("lastname", user.getLastName());
-    String jwtToken = jwtService.generateToken(extraClaims, user);
     generateConfirmationEmail(user);
   }
 
@@ -81,10 +78,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .user(user)
             .build();
     confirmationTokenService.saveConfirmationToken(confirmationToken);
-    String link = "http://localhost:8080/api/v1/auth/confirm?token=" + token;
     emailService.send(
             user.getEmail(),
-            buildEmail(user, link)
+            buildEmail(user, confirmLink)
     );
   }
 
