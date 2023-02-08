@@ -1,13 +1,19 @@
-#spring.datasource.url=jdbc:h2:mem:testdb
+
 
 spring:
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    sender: ${MAIL_FROM}
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
   datasource:
-    url: jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_422a7800be4c44e
-    username: bff884f66dcfae
-    password: 94998f60
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
@@ -18,6 +24,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
+
+auth:
+  confirmation-token-expiration-minutes: 0
 
 caching:
   spring:
@@ -31,3 +40,4 @@ external-apis:
   yahoofinance-income-statements-quarterly: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=incomeStatementHistoryQuarterly
   yahoofinance-balance-sheet: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=balanceSheetHistory
   yahoofinance-balance-sheet-quarterly: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=balanceSheetHistoryQuarterly
+  confirm-email: ${CONFIRMATION_EMAIL_REDIRECT}

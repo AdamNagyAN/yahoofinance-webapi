@@ -3,6 +3,8 @@ package com.adamnagyan.yahoofinancewebapi.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -62,7 +64,7 @@ public class CustomExceptionHandler {
 
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   @ExceptionHandler(CredentialExpiredException.class)
-  public ResponseEntity<?> credentialsExpiredExceptionHandling() {
+  public ResponseEntity<?> invalidCredentialsExceptionHandling() {
     return new ResponseEntity<>(
             new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
             HttpStatus.UNAUTHORIZED
@@ -76,6 +78,31 @@ public class CustomExceptionHandler {
             new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
             HttpStatus.BAD_REQUEST
     );
+  }
+
+
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ExceptionHandler(DisabledException.class)
+  public ResponseEntity<?> disabledUserExceptionHandler() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_DISABLED_USER, new Date()), HttpStatus.FORBIDDEN);
+  }
+
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ExceptionHandler(UsernameNotFoundException.class)
+  public ResponseEntity<?> userNotFoundException() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_NOT_FOUND, new Date()), HttpStatus.NOT_FOUND);
+  }
+
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ExceptionHandler(ConfirmationTokenNotFoundException.class)
+  public ResponseEntity<?> confirmationTokenNotFoundException() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_CONFIRMATION_TOKEN_NOT_FOUND, new Date()), HttpStatus.NOT_FOUND);
+  }
+
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ExceptionHandler(ConfirmationTokenExpiredException.class)
+  public ResponseEntity<?> confirmationTokenExpiredException() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_CONFIRMATION_TOKEN_EXPIRED, new Date()), HttpStatus.FORBIDDEN);
   }
 
 

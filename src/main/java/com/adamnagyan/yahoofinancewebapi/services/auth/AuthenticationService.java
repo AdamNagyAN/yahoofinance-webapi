@@ -6,7 +6,12 @@ import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.RegisterRequestDto;
 import com.adamnagyan.yahoofinancewebapi.exceptions.UserAlreadyExistAuthenticationException;
 
 public interface AuthenticationService {
-  AuthenticationResponseDto register(RegisterRequestDto request) throws UserAlreadyExistAuthenticationException;
+  void register(RegisterRequestDto request) throws UserAlreadyExistAuthenticationException;
+
+  void sendConfirmationEmail(String email);
 
   AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
+
+
+  void confirmRegistrationToken(String token);
 }
