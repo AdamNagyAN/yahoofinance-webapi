@@ -70,6 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     generateConfirmationEmail(user);
   }
 
+  @SneakyThrows
   private void generateConfirmationEmail(User user) {
     String token = UUID.randomUUID().toString();
     ConfirmationToken confirmationToken = ConfirmationToken.builder()
@@ -87,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   @Override
-  public AuthenticationResponseDto authenticate(AuthenticationRequestDto request) {
+  public AuthenticationResponseDto login(AuthenticationRequestDto request) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
     User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
     HashMap<String, Object> extraClaims = new HashMap<>();

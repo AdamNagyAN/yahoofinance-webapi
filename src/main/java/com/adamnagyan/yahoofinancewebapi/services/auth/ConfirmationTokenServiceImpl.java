@@ -24,4 +24,9 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
   public Optional<ConfirmationToken> getToken(String token) {
     return confirmationTokenRepository.findByToken(token);
   }
+
+  @Override
+  public Optional<ConfirmationToken> getToken(Long userId) {
+    return confirmationTokenRepository.findByUser(userId);
+  }
 }

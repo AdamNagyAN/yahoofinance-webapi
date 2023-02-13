@@ -1,3 +1,9 @@
+logging:
+  level:
+    org:
+      springframework:
+        security: INFO
+
 spring:
   mvc:
     pathmatch:
@@ -10,7 +16,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -20,3 +26,4 @@ spring:
 
 external-apis:
   confirm-email: 'https://dividend-portfolio.netlify.app/confirm'
+

@@ -19,7 +19,7 @@ public class CorsConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.addAllowedOriginPattern(CorsConfiguration.ALL);
     configuration.setAllowedMethods(List.of(CorsConfiguration.ALL));
-    configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+    configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token", "recaptcha"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;

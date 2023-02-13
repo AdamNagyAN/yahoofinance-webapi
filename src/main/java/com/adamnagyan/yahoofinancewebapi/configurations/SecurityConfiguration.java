@@ -1,5 +1,7 @@
 package com.adamnagyan.yahoofinancewebapi.configurations;
 
+import com.adamnagyan.yahoofinancewebapi.configurations.captcha.RecaptchaFilter;
+import com.adamnagyan.yahoofinancewebapi.services.captcha.RecaptchaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +35,7 @@ public class SecurityConfiguration {
 
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http, RecaptchaService recaptchaService) throws Exception {
     http
             .cors().and().csrf()
             .disable()
@@ -50,6 +52,7 @@ public class SecurityConfiguration {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authenticationProvider(authenticationProvider)
+            .addFilterBefore(new RecaptchaFilter(recaptchaService), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }

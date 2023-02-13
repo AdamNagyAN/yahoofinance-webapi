@@ -10,7 +10,7 @@ public interface AuthenticationService {
 
   void sendConfirmationEmail(String email);
 
-  AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
+  AuthenticationResponseDto login(AuthenticationRequestDto request);
 
 
   void confirmRegistrationToken(String token);

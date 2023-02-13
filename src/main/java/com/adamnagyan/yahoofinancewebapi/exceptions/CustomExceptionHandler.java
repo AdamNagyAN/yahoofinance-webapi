@@ -2,6 +2,7 @@ package com.adamnagyan.yahoofinancewebapi.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSendException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -87,10 +88,22 @@ public class CustomExceptionHandler {
     return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_DISABLED_USER, new Date()), HttpStatus.FORBIDDEN);
   }
 
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ExceptionHandler(RecaptchaException.class)
+  public ResponseEntity<?> recaptchaExceptionHandler() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_RECAPTCHA_ERROR, new Date()), HttpStatus.FORBIDDEN);
+  }
+
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ExceptionHandler(UsernameNotFoundException.class)
   public ResponseEntity<?> userNotFoundException() {
     return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_NOT_FOUND, new Date()), HttpStatus.NOT_FOUND);
+  }
+
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ExceptionHandler(UserIsAlreadyEnabledException.class)
+  public ResponseEntity<?> userAlreadyEnabledException() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_ALREADY_ENABLED, new Date()), HttpStatus.NOT_FOUND);
   }
 
   @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -103,6 +116,12 @@ public class CustomExceptionHandler {
   @ExceptionHandler(ConfirmationTokenExpiredException.class)
   public ResponseEntity<?> confirmationTokenExpiredException() {
     return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_CONFIRMATION_TOKEN_EXPIRED, new Date()), HttpStatus.FORBIDDEN);
+  }
+
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ExceptionHandler(MailSendException.class)
+  public ResponseEntity<?> mailSendingException() {
+    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_MAIL_SENDING_ERROR, new Date()), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
 

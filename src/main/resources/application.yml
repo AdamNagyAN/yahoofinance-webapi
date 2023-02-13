@@ -1,5 +1,4 @@
 
-
 spring:
   mail:
     host: ${MAIL_HOST}
@@ -16,7 +15,7 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -26,7 +25,7 @@ spring:
       ddl-auto: update
 
 auth:
-  confirmation-token-expiration-minutes: 0
+  confirmation-token-expiration-minutes: 15
 
 caching:
   spring:
@@ -41,3 +40,9 @@ external-apis:
   yahoofinance-balance-sheet: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=balanceSheetHistory
   yahoofinance-balance-sheet-quarterly: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=balanceSheetHistoryQuarterly
   confirm-email: ${CONFIRMATION_EMAIL_REDIRECT}
+
+google:
+  recaptcha:
+    key:
+      verify-url: https://www.google.com/recaptcha/api/siteverify
+      secret-key: ${RECAPTCHA_SECRET}

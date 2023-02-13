@@ -28,7 +28,7 @@ public class AuthenticationController {
   @PostMapping("/login")
   @ResponseStatus(HttpStatus.OK)
   public AuthenticationResponseDto login(@Valid @RequestBody AuthenticationRequestDto request) {
-    return service.authenticate(request);
+    return service.login(request);
   }
 
   @GetMapping("/confirm")
