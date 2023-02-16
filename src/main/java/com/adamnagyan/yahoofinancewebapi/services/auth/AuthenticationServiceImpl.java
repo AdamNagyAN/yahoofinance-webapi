@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.UUID;
@@ -52,8 +53,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private Integer confirmationTokenExpiry = 15;
 
 	@Override
+	@Transactional
 	public void register(RegisterRequestDto request) throws UserAlreadyExistAuthenticationException {
-		if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+		if (userRepository.existsByEmail(request.getEmail())) {
 			throw new UserAlreadyExistAuthenticationException();
 		}
 		User user = User.builder()
@@ -69,17 +71,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	@SneakyThrows
+	@Transactional
 	public void sendConfirmationEmail(String email) {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 		if (user.getEnabled()) {
 			throw new UserIsAlreadyEnabledException();
 		}
+		confirmationTokenService.deleteAllByUser(user);
 		generateConfirmationEmail(user);
 	}
 
 	@SneakyThrows
-	private void generateConfirmationEmail(User user) {
+	@Transactional
+	public void generateConfirmationEmail(User user) {
 		String token = UUID.randomUUID().toString();
 		ConfirmationToken confirmationToken = ConfirmationToken.builder()
 			.token(token)
@@ -108,6 +113,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	@SneakyThrows
+	@Transactional
 	public void confirmRegistrationToken(String token) {
 		ConfirmationToken confirmationToken = confirmationTokenService.getToken(token)
 			.orElseThrow(ConfirmationTokenNotFoundException::new);
@@ -125,6 +131,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		User user = userRepository.findByEmail(confirmationToken.getUser().getEmail())
 			.orElseThrow(() -> new UsernameNotFoundException("user not found"));
 		user.setEnabled(true);
+		confirmationTokenService.deleteAllByUser(user);
 		userRepository.save(user);
 	}
 

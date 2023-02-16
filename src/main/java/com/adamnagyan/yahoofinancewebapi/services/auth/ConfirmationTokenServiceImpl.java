@@ -1,6 +1,7 @@
 package com.adamnagyan.yahoofinancewebapi.services.auth;
 
 import com.adamnagyan.yahoofinancewebapi.model.user.ConfirmationToken;
+import com.adamnagyan.yahoofinancewebapi.model.user.User;
 import com.adamnagyan.yahoofinancewebapi.repositories.user.ConfirmationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,8 +27,13 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 	}
 
 	@Override
-	public Optional<ConfirmationToken> getToken(Long userId) {
-		return confirmationTokenRepository.findByUser(userId);
+	public Optional<ConfirmationToken> getToken(User user) {
+		return confirmationTokenRepository.findByUser(user);
+	}
+
+	@Override
+	public void deleteAllByUser(User user) {
+		confirmationTokenRepository.deleteAllByUser(user);
 	}
 
 }
