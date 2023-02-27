@@ -17,29 +17,31 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
-  private final AuthenticationService service;
+	private final AuthenticationService service;
 
-  @PostMapping("/register")
-  @ResponseStatus(HttpStatus.CREATED)
-  public void register(@Valid @RequestBody RegisterRequestDto request) throws UserAlreadyExistAuthenticationException {
-    service.register(request);
-  }
+	@PostMapping("/register")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void register(@Valid @RequestBody RegisterRequestDto request)
+			throws UserAlreadyExistAuthenticationException {
+		service.register(request);
+	}
 
-  @PostMapping("/login")
-  @ResponseStatus(HttpStatus.OK)
-  public AuthenticationResponseDto login(@Valid @RequestBody AuthenticationRequestDto request) {
-    return service.login(request);
-  }
+	@PostMapping("/login")
+	@ResponseStatus(HttpStatus.OK)
+	public AuthenticationResponseDto login(@Valid @RequestBody AuthenticationRequestDto request) {
+		return service.login(request);
+	}
 
-  @GetMapping("/confirm")
-  @ResponseStatus(HttpStatus.OK)
-  public void confirm(@RequestParam("token") String token) {
-    service.confirmRegistrationToken(token);
-  }
+	@GetMapping("/confirm")
+	@ResponseStatus(HttpStatus.OK)
+	public void confirm(@RequestParam("token") String token) {
+		service.confirmRegistrationToken(token);
+	}
 
-  @PostMapping("/resend-email")
-  @ResponseStatus(HttpStatus.OK)
-  public void resendEmail(@Valid @RequestBody ResendRequestDto request) {
-    service.sendConfirmationEmail(request.getEmail());
-  }
+	@PostMapping("/resend-email")
+	@ResponseStatus(HttpStatus.OK)
+	public void resendEmail(@Valid @RequestBody ResendRequestDto request) {
+		service.sendConfirmationEmail(request.getEmail());
+	}
+
 }

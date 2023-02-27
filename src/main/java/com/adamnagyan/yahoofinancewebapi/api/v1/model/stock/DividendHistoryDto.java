@@ -9,7 +9,11 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class DividendHistoryDto {
-  private List<DividendDto> historicalDividends;
-  private List<String> validTimeFrames;
-  private Map<String, Double> divGrowthRates;
+
+	private List<DividendDto> historicalDividends;
+
+	private List<String> validTimeFrames;
+
+	private Map<String, Double> divGrowthRates;
+
 }

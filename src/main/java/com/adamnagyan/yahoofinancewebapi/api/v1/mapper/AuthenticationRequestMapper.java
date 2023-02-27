@@ -7,7 +7,8 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface AuthenticationRequestMapper {
 
-  AuthenticationRequestMapper INSTANCE = Mappers.getMapper(AuthenticationRequestMapper.class);
+	AuthenticationRequestMapper INSTANCE = Mappers.getMapper(AuthenticationRequestMapper.class);
 
-  AuthenticationResponseDto authenticationResponseToDTO(String token);
+	AuthenticationResponseDto authenticationResponseToDTO(String token);
+
 }

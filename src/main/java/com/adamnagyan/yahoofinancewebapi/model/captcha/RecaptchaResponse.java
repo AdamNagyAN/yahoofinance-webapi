@@ -5,12 +5,6 @@ import lombok.Builder;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
-public record RecaptchaResponse(
-        Boolean success,
-        String challenge_ts,
-        String hostname,
-        Double score,
-        String action
-) {
+public record RecaptchaResponse(Boolean success, String challenge_ts, String hostname, Double score, String action) {
 
 }

@@ -15,26 +15,29 @@ import javax.mail.internet.MimeMessage;
 @RequiredArgsConstructor
 @Slf4j
 public class EmailServiceImpl implements EmailService {
-  private final JavaMailSender mailSender;
-  @Value("${spring.mail.sender}")
-  private String from;
 
-  @Override
-  @Async
-  public void send(String to, String email) {
-    try {
-      MimeMessage mimeMessage = mailSender.createMimeMessage();
-      MimeMessageHelper helper =
-              new MimeMessageHelper(mimeMessage, "utf-8");
-      helper.setText(email, true);
-      helper.setTo(to);
-      helper.setSubject("Confirm your email");
-      helper.setFrom(from);
-      log.info("Sending... from: " + from);
-      mailSender.send(mimeMessage);
-      log.info("Email sent to: " + to);
-    } catch (MessagingException e) {
-      log.error("Failed to send email", e);
-    }
-  }
+	private final JavaMailSender mailSender;
+
+	@Value("${spring.mail.sender}")
+	private String from;
+
+	@Override
+	@Async
+	public void send(String to, String email) {
+		try {
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+			helper.setText(email, true);
+			helper.setTo(to);
+			helper.setSubject("Confirm your email");
+			helper.setFrom(from);
+			log.info("Sending... from: " + from);
+			mailSender.send(mimeMessage);
+			log.info("Email sent to: " + to);
+		}
+		catch (MessagingException e) {
+			log.error("Failed to send email", e);
+		}
+	}
+
 }

@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile("dev")
 public class RecaptchaServiceMock implements RecaptchaService {
-  @Override
-  public RecaptchaResponse validateToken(String recaptchaToken) {
-    return RecaptchaResponse.builder()
-            .success(true)
-            .score(0.8)
-            .build();
-  }
+
+	@Override
+	public RecaptchaResponse validateToken(String recaptchaToken) {
+		return RecaptchaResponse.builder().success(true).score(0.8).build();
+	}
+
 }

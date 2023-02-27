@@ -4,8 +4,8 @@ import javax.security.sasl.AuthenticationException;
 
 public class UserAlreadyExistAuthenticationException extends AuthenticationException {
 
-  public UserAlreadyExistAuthenticationException() {
-    super();
-  }
+	public UserAlreadyExistAuthenticationException() {
+		super();
+	}
 
 }

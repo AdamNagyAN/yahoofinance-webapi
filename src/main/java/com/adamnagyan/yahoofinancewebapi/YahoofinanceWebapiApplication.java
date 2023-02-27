@@ -8,8 +8,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties
 public class YahoofinanceWebapiApplication {
 
-  public static void main(String[] args)  {
-    SpringApplication.run(YahoofinanceWebapiApplication.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(YahoofinanceWebapiApplication.class, args);
+	}
 
 }

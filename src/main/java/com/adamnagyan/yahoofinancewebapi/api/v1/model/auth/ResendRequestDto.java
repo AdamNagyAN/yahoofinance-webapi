@@ -8,6 +8,8 @@ import javax.validation.constraints.Email;
 @Getter
 @Setter
 public class ResendRequestDto {
-  @Email
-  private String email;
+
+	@Email
+	private String email;
+
 }

@@ -6,7 +6,9 @@ import com.adamnagyan.yahoofinancewebapi.exceptions.BadRequestException;
 import java.io.IOException;
 
 public interface DividendHistoryService {
-  DividendHistoryDto findStockByTicker(String ticker, String timeframe) throws IOException, BadRequestException;
 
-  DividendHistoryDto findStockByTicker(String ticker) throws IOException, BadRequestException;
+	DividendHistoryDto findStockByTicker(String ticker, String timeframe) throws IOException, BadRequestException;
+
+	DividendHistoryDto findStockByTicker(String ticker) throws IOException, BadRequestException;
+
 }

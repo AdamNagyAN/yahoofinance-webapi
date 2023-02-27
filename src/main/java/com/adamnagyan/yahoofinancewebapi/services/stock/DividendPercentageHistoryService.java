@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface DividendPercentageHistoryService {
 
-  public List<PriceDto> getPriceHistory(String stock) throws IOException, BadRequestException;
+	public List<PriceDto> getPriceHistory(String stock) throws IOException, BadRequestException;
 
-  public DividendPercentageHistoryDto getDividendPercentageHistoryDto(String symbol, String timeframe) throws IOException, BadRequestException;
-
+	public DividendPercentageHistoryDto getDividendPercentageHistoryDto(String symbol, String timeframe)
+			throws IOException, BadRequestException;
 
 }

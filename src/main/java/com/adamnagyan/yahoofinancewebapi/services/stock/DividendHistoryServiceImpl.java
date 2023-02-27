@@ -26,81 +26,80 @@ import java.util.stream.Collectors;
 @Caching
 @Slf4j
 public class DividendHistoryServiceImpl implements DividendHistoryService {
-  public static final String DIVIDEND_HISTORY_KEY = "dividend-history";
-  private final ApplicationContext applicationContext;
-  private final DividendHistoryMapper dividendHistoryMapper;
 
+	public static final String DIVIDEND_HISTORY_KEY = "dividend-history";
 
-  private DividendHistoryService getDividendHistoryService() {
-    return applicationContext.getBean(DividendHistoryService.class);
-  }
+	private final ApplicationContext applicationContext;
 
-  @Override
-  public DividendHistoryDto findStockByTicker(String ticker, String timeframe) throws IOException, BadRequestException {
-    LocalDate date = LocalDate.now().plusYears(StockTimeFrames.getTimeFrameByName(timeframe).getValue());
+	private final DividendHistoryMapper dividendHistoryMapper;
 
-    DividendHistoryDto cachedData = getDividendHistoryService().findStockByTicker(ticker);
+	private DividendHistoryService getDividendHistoryService() {
+		return applicationContext.getBean(DividendHistoryService.class);
+	}
 
+	@Override
+	public DividendHistoryDto findStockByTicker(String ticker, String timeframe)
+			throws IOException, BadRequestException {
+		LocalDate date = LocalDate.now().plusYears(StockTimeFrames.getTimeFrameByName(timeframe).getValue());
 
-    return new DividendHistoryDto(
-            cachedData.getHistoricalDividends().stream()
-                    .filter(dividendDto -> dividendDto.getDate().isAfter(date)).toList(),
-            cachedData.getValidTimeFrames(),
-            cachedData.getDivGrowthRates()
-    );
-  }
+		DividendHistoryDto cachedData = getDividendHistoryService().findStockByTicker(ticker);
 
-  private void putDgrToMap(Map<String, Double> divGrowthRates, DividendDto lastDividend, DividendDto dividendDto, int years) {
-    String key = "dgr" + years;
-    if (divGrowthRates.get(key) == null && dividendDto.getDate().isBefore(lastDividend.getDate().minusYears(years))) {
-      divGrowthRates.put(key, calculateDgrFormula(lastDividend.getAdjDividend(), dividendDto.getAdjDividend(), years));
-      log.info(key + ": " + dividendDto + " = " + divGrowthRates.get(key));
-    }
-  }
+		return new DividendHistoryDto(cachedData.getHistoricalDividends()
+			.stream()
+			.filter(dividendDto -> dividendDto.getDate().isAfter(date))
+			.toList(), cachedData.getValidTimeFrames(), cachedData.getDivGrowthRates());
+	}
 
-  @Override
-  @Cacheable(cacheNames = DIVIDEND_HISTORY_KEY, key = "#ticker")
-  public DividendHistoryDto findStockByTicker(String ticker) throws IOException, BadRequestException {
+	private void putDgrToMap(Map<String, Double> divGrowthRates, DividendDto lastDividend, DividendDto dividendDto,
+			int years) {
+		String key = "dgr" + years;
+		if (divGrowthRates.get(key) == null
+				&& dividendDto.getDate().isBefore(lastDividend.getDate().minusYears(years))) {
+			divGrowthRates.put(key,
+					calculateDgrFormula(lastDividend.getAdjDividend(), dividendDto.getAdjDividend(), years));
+			log.info(key + ": " + dividendDto + " = " + divGrowthRates.get(key));
+		}
+	}
 
-    Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.YEAR, StockTimeFrames.MAX.getValue());
+	@Override
+	@Cacheable(cacheNames = DIVIDEND_HISTORY_KEY, key = "#ticker")
+	public DividendHistoryDto findStockByTicker(String ticker) throws IOException, BadRequestException {
 
-    Stock stock = YahooFinance.get(ticker, cal);
-    if (stock == null) {
-      throw new BadRequestException("symbol", "Symbol was not found!");
-    }
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, StockTimeFrames.MAX.getValue());
 
-    List<DividendDto> historicalDividends = dividendHistoryMapper.toDividenDtoList(stock.getDividendHistory(cal));
+		Stock stock = YahooFinance.get(ticker, cal);
+		if (stock == null) {
+			throw new BadRequestException("symbol", "Symbol was not found!");
+		}
 
-    Map<String, Double> divGrowthRates = new HashMap<>();
+		List<DividendDto> historicalDividends = dividendHistoryMapper.toDividenDtoList(stock.getDividendHistory(cal));
 
-    DividendDto lastDividend = historicalDividends.get(historicalDividends.size() - 1);
-    for (int i = historicalDividends.size() - 1; i >= 0; i--) {
-      DividendDto dividendDto = historicalDividends.get(i);
-      putDgrToMap(divGrowthRates, lastDividend, dividendDto, 1);
-      putDgrToMap(divGrowthRates, lastDividend, dividendDto, 3);
-      putDgrToMap(divGrowthRates, lastDividend, dividendDto, 5);
-      putDgrToMap(divGrowthRates, lastDividend, dividendDto, 10);
-    }
+		Map<String, Double> divGrowthRates = new HashMap<>();
 
-    return dividendHistoryMapper.toDTO(
-            0,
-            historicalDividends,
-            Arrays.stream(StockTimeFrames.values())
-                    .map(StockTimeFrames::getName)
-                    .collect(Collectors.toList()),
-            divGrowthRates
-    );
-  }
+		DividendDto lastDividend = historicalDividends.get(historicalDividends.size() - 1);
+		for (int i = historicalDividends.size() - 1; i >= 0; i--) {
+			DividendDto dividendDto = historicalDividends.get(i);
+			putDgrToMap(divGrowthRates, lastDividend, dividendDto, 1);
+			putDgrToMap(divGrowthRates, lastDividend, dividendDto, 3);
+			putDgrToMap(divGrowthRates, lastDividend, dividendDto, 5);
+			putDgrToMap(divGrowthRates, lastDividend, dividendDto, 10);
+		}
 
-  private Double calculateDgrFormula(double end, double start, int years) {
-    if (start == 0.0 || years == 0.0) return 0.0;
-    return Math.pow(end / start, 1.0 / years) - 1;
-  }
+		return dividendHistoryMapper.toDTO(0, historicalDividends,
+				Arrays.stream(StockTimeFrames.values()).map(StockTimeFrames::getName).collect(Collectors.toList()),
+				divGrowthRates);
+	}
 
-  @Scheduled(fixedRateString = "${caching.spring.dividend-history}")
-  @CacheEvict(value = DIVIDEND_HISTORY_KEY, allEntries = true)
-  public void emptyDividendHistoryCache() {
-  }
+	private Double calculateDgrFormula(double end, double start, int years) {
+		if (start == 0.0 || years == 0.0)
+			return 0.0;
+		return Math.pow(end / start, 1.0 / years) - 1;
+	}
+
+	@Scheduled(fixedRateString = "${caching.spring.dividend-history}")
+	@CacheEvict(value = DIVIDEND_HISTORY_KEY, allEntries = true)
+	public void emptyDividendHistoryCache() {
+	}
 
 }

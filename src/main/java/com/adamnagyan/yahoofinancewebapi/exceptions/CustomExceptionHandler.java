@@ -19,110 +19,95 @@ import java.util.List;
 
 @ControllerAdvice
 public class CustomExceptionHandler {
-  @ExceptionHandler(BadRequestException.class)
-  public ResponseEntity<?> badRequestExceptionHandling(BadRequestException ex) {
-    return new ResponseEntity<>(
-            new ExceptionBody(ErrorCode.OO_INVALID_ARGUMENT_ERROR,
-                    new Date(),
-                    ex.getArgument(),
-                    ex.getMessage()
-            ),
-            HttpStatus.BAD_REQUEST);
-  }
 
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<?> generalExceptionHandling() {
-    return new ResponseEntity<>(
-            new ExceptionBody(ErrorCode.OO_GENERAL_ERROR, new Date()),
-            HttpStatus.BAD_REQUEST
-    );
-  }
+	@ExceptionHandler(BadRequestException.class)
+	public ResponseEntity<?> badRequestExceptionHandling(BadRequestException ex) {
+		return new ResponseEntity<>(
+				new ExceptionBody(ErrorCode.OO_INVALID_ARGUMENT_ERROR, new Date(), ex.getArgument(), ex.getMessage()),
+				HttpStatus.BAD_REQUEST);
+	}
 
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<?> handleValidationExceptions(
-          MethodArgumentNotValidException ex) {
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<?> generalExceptionHandling() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_GENERAL_ERROR, new Date()), HttpStatus.BAD_REQUEST);
+	}
 
-    List<ObjectError> fieldErrors = ex.getAllErrors();
-    return new ResponseEntity<>(
-            new ExceptionBody(
-                    ErrorCode.OO_INVALID_ARGUMENT_ERROR, new Date(),
-                    ((FieldError) fieldErrors.get(0)).getField(),
-                    fieldErrors.get(0).getDefaultMessage()),
-            HttpStatus.NOT_FOUND
-    );
-  }
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(UserAlreadyExistAuthenticationException.class)
-  public ResponseEntity<?> userAlreadyExistsExceptionHandling() {
-    return new ResponseEntity<>(
-            new ExceptionBody(ErrorCode.OO_USER_ALREADY_EXISTS, new Date()),
-            HttpStatus.BAD_REQUEST
-    );
-  }
+		List<ObjectError> fieldErrors = ex.getAllErrors();
+		return new ResponseEntity<>(
+				new ExceptionBody(ErrorCode.OO_INVALID_ARGUMENT_ERROR, new Date(),
+						((FieldError) fieldErrors.get(0)).getField(), fieldErrors.get(0).getDefaultMessage()),
+				HttpStatus.NOT_FOUND);
+	}
 
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(UserAlreadyExistAuthenticationException.class)
+	public ResponseEntity<?> userAlreadyExistsExceptionHandling() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_ALREADY_EXISTS, new Date()),
+				HttpStatus.BAD_REQUEST);
+	}
 
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)
-  @ExceptionHandler(CredentialExpiredException.class)
-  public ResponseEntity<?> invalidCredentialsExceptionHandling() {
-    return new ResponseEntity<>(
-            new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
-            HttpStatus.UNAUTHORIZED
-    );
-  }
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ExceptionHandler(CredentialExpiredException.class)
+	public ResponseEntity<?> invalidCredentialsExceptionHandling() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
+				HttpStatus.UNAUTHORIZED);
+	}
 
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(BadCredentialsException.class)
-  public ResponseEntity<?> badCredentialsExceptionHandling() {
-    return new ResponseEntity<>(
-            new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
-            HttpStatus.BAD_REQUEST
-    );
-  }
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<?> badCredentialsExceptionHandling() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_INVALID_CREDENTIALS, new Date()),
+				HttpStatus.BAD_REQUEST);
+	}
 
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ExceptionHandler(DisabledException.class)
+	public ResponseEntity<?> disabledUserExceptionHandler() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_DISABLED_USER, new Date()), HttpStatus.FORBIDDEN);
+	}
 
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  @ExceptionHandler(DisabledException.class)
-  public ResponseEntity<?> disabledUserExceptionHandler() {
-    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_DISABLED_USER, new Date()), HttpStatus.FORBIDDEN);
-  }
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ExceptionHandler(RecaptchaException.class)
+	public ResponseEntity<?> recaptchaExceptionHandler() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_RECAPTCHA_ERROR, new Date()), HttpStatus.FORBIDDEN);
+	}
 
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  @ExceptionHandler(RecaptchaException.class)
-  public ResponseEntity<?> recaptchaExceptionHandler() {
-    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_RECAPTCHA_ERROR, new Date()), HttpStatus.FORBIDDEN);
-  }
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(UsernameNotFoundException.class)
+	public ResponseEntity<?> userNotFoundException() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_NOT_FOUND, new Date()), HttpStatus.NOT_FOUND);
+	}
 
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  @ExceptionHandler(UsernameNotFoundException.class)
-  public ResponseEntity<?> userNotFoundException() {
-    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_NOT_FOUND, new Date()), HttpStatus.NOT_FOUND);
-  }
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ExceptionHandler(UserIsAlreadyEnabledException.class)
+	public ResponseEntity<?> userAlreadyEnabledException() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_ALREADY_ENABLED, new Date()),
+				HttpStatus.NOT_FOUND);
+	}
 
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  @ExceptionHandler(UserIsAlreadyEnabledException.class)
-  public ResponseEntity<?> userAlreadyEnabledException() {
-    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_ALREADY_ENABLED, new Date()), HttpStatus.NOT_FOUND);
-  }
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(ConfirmationTokenNotFoundException.class)
+	public ResponseEntity<?> confirmationTokenNotFoundException() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_CONFIRMATION_TOKEN_NOT_FOUND, new Date()),
+				HttpStatus.NOT_FOUND);
+	}
 
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  @ExceptionHandler(ConfirmationTokenNotFoundException.class)
-  public ResponseEntity<?> confirmationTokenNotFoundException() {
-    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_CONFIRMATION_TOKEN_NOT_FOUND, new Date()), HttpStatus.NOT_FOUND);
-  }
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ExceptionHandler(ConfirmationTokenExpiredException.class)
+	public ResponseEntity<?> confirmationTokenExpiredException() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_CONFIRMATION_TOKEN_EXPIRED, new Date()),
+				HttpStatus.FORBIDDEN);
+	}
 
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  @ExceptionHandler(ConfirmationTokenExpiredException.class)
-  public ResponseEntity<?> confirmationTokenExpiredException() {
-    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_CONFIRMATION_TOKEN_EXPIRED, new Date()), HttpStatus.FORBIDDEN);
-  }
-
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  @ExceptionHandler(MailSendException.class)
-  public ResponseEntity<?> mailSendingException() {
-    return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_MAIL_SENDING_ERROR, new Date()), HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(MailSendException.class)
+	public ResponseEntity<?> mailSendingException() {
+		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_MAIL_SENDING_ERROR, new Date()),
+				HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
 }

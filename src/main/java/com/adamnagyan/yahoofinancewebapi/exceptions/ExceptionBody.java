@@ -11,11 +11,15 @@ import java.util.Date;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class ExceptionBody {
-  @NonNull
-  private ErrorCode code;
-  @NonNull
-  private Date timestamp;
-  private String parameter;
-  private String message;
+
+	@NonNull
+	private ErrorCode code;
+
+	@NonNull
+	private Date timestamp;
+
+	private String parameter;
+
+	private String message;
 
 }

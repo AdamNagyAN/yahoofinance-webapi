@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface StockRepository {
 
-  public List<StockCashflowStatement> getCashFlowStatements(String symbol) throws JsonProcessingException;
+	public List<StockCashflowStatement> getCashFlowStatements(String symbol) throws JsonProcessingException;
 
-  public List<StockIncomeStatement> getIncomeStatements(String symbol);
+	public List<StockIncomeStatement> getIncomeStatements(String symbol);
 
-  public List<StockBalanceSheet> getBalanceSheets(String symbol);
+	public List<StockBalanceSheet> getBalanceSheets(String symbol);
 
 }

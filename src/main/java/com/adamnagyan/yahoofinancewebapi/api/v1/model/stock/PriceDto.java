@@ -9,7 +9,8 @@ import java.time.LocalDate;
 @Data
 public class PriceDto {
 
-  private LocalDate date;
-  private double price;
+	private LocalDate date;
+
+	private double price;
 
 }

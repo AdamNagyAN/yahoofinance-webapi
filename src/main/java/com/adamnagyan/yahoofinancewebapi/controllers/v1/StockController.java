@@ -17,44 +17,52 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/symbol/{symbol}")
 public class StockController {
-  private final DividendHistoryService dividendHistoryService;
-  private final DividendPercentageHistoryService dividendPercentageHistoryService;
-  private final StockSummaryService stockSummaryService;
-  private final FinancialStatementsService financialStatementsService;
 
-  @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  public StockSummaryDto getStockSummaryBySymbol(@PathVariable("symbol") String symbol) throws IOException, BadRequestException {
-    return stockSummaryService.getStockSummary(symbol);
-  }
+	private final DividendHistoryService dividendHistoryService;
 
-  @GetMapping("prices")
-  @ResponseStatus(HttpStatus.OK)
-  public List<PriceDto> getPriceList(@PathVariable("symbol") String symbol) throws IOException, BadRequestException {
-    return dividendPercentageHistoryService.getPriceHistory(symbol);
-  }
+	private final DividendPercentageHistoryService dividendPercentageHistoryService;
 
-  @GetMapping("dividend-history")
-  @ResponseStatus(HttpStatus.OK)
-  public DividendHistoryDto getDividendHistoryBySymbol(@PathVariable("symbol") String symbol, @RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
-    if (timeFrame == null) {
-      return dividendHistoryService.findStockByTicker(symbol);
-    }
-    return dividendHistoryService.findStockByTicker(symbol, timeFrame);
-  }
+	private final StockSummaryService stockSummaryService;
 
-  @GetMapping("dividend-percentage-history")
-  @ResponseStatus(HttpStatus.OK)
-  public DividendPercentageHistoryDto getDividendPercentageHistory(@PathVariable("symbol") String symbol, @RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
-    if (timeFrame == null) {
-      return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, "max");
-    }
-    return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, timeFrame);
-  }
+	private final FinancialStatementsService financialStatementsService;
 
-  @GetMapping("financials")
-  @ResponseStatus(HttpStatus.OK)
-  public FinancialDataDto getCashFlowStatement(@PathVariable("symbol") String symbol) {
-    return financialStatementsService.getFinancialData(symbol);
-  }
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public StockSummaryDto getStockSummaryBySymbol(@PathVariable("symbol") String symbol)
+			throws IOException, BadRequestException {
+		return stockSummaryService.getStockSummary(symbol);
+	}
+
+	@GetMapping("prices")
+	@ResponseStatus(HttpStatus.OK)
+	public List<PriceDto> getPriceList(@PathVariable("symbol") String symbol) throws IOException, BadRequestException {
+		return dividendPercentageHistoryService.getPriceHistory(symbol);
+	}
+
+	@GetMapping("dividend-history")
+	@ResponseStatus(HttpStatus.OK)
+	public DividendHistoryDto getDividendHistoryBySymbol(@PathVariable("symbol") String symbol,
+			@RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
+		if (timeFrame == null) {
+			return dividendHistoryService.findStockByTicker(symbol);
+		}
+		return dividendHistoryService.findStockByTicker(symbol, timeFrame);
+	}
+
+	@GetMapping("dividend-percentage-history")
+	@ResponseStatus(HttpStatus.OK)
+	public DividendPercentageHistoryDto getDividendPercentageHistory(@PathVariable("symbol") String symbol,
+			@RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
+		if (timeFrame == null) {
+			return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, "max");
+		}
+		return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, timeFrame);
+	}
+
+	@GetMapping("financials")
+	@ResponseStatus(HttpStatus.OK)
+	public FinancialDataDto getCashFlowStatement(@PathVariable("symbol") String symbol) {
+		return financialStatementsService.getFinancialData(symbol);
+	}
+
 }

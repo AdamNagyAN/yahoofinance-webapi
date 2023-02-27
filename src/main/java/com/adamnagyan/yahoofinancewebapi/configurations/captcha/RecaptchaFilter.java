@@ -16,28 +16,27 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class RecaptchaFilter extends OncePerRequestFilter {
 
-  private final RecaptchaService recaptchaService;
+	private final RecaptchaService recaptchaService;
 
-  @Override
-  @SneakyThrows
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
-    String recaptcha = request.getHeader("recaptcha");
-    RecaptchaResponse recaptchaResponse = recaptchaService.validateToken(recaptcha);
-    log.info("reCaptcha response is:" + recaptchaResponse.toString());
-    // recaptcha score check
-    if (!recaptchaResponse.success()) {
-      log.info("Invalid reCaptcha token");
-      throw new RecaptchaException("Invalid reCaptcha token");
-    }
+	@Override
+	@SneakyThrows
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+		String recaptcha = request.getHeader("recaptcha");
+		RecaptchaResponse recaptchaResponse = recaptchaService.validateToken(recaptcha);
+		log.info("reCaptcha response is:" + recaptchaResponse.toString());
+		// recaptcha score check
+		if (!recaptchaResponse.success()) {
+			log.info("Invalid reCaptcha token");
+			throw new RecaptchaException("Invalid reCaptcha token");
+		}
 
+		filterChain.doFilter(request, response);
+	}
 
-    filterChain.doFilter(request, response);
-  }
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) {
+		String path = request.getServletPath();
+		return !(path.startsWith("/api/v1/auth") && request.getMethod().equals("POST"));
+	}
 
-
-  @Override
-  protected boolean shouldNotFilter(HttpServletRequest request) {
-    String path = request.getServletPath();
-    return !(path.startsWith("/api/v1/auth") && request.getMethod().equals("POST"));
-  }
 }

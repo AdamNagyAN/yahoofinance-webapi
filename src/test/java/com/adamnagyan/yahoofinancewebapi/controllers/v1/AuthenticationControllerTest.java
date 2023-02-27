@@ -10,33 +10,35 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 class AuthenticationControllerTest {
 
-  WebTestClient webTestClient;
-  AuthenticationController authenticationController;
-  AuthenticationService authenticationService;
+	WebTestClient webTestClient;
 
-  @Before
-  public void setUp() throws Exception {
-    authenticationService = Mockito.mock(AuthenticationServiceImpl.class);
-    authenticationController = new AuthenticationController(authenticationService);
-    webTestClient = WebTestClient.bindToController(authenticationController).build();
-  }
+	AuthenticationController authenticationController;
 
-  @Test
-  void register() {
-    RegisterRequestDto registerRequestDto = new RegisterRequestDto();
-    registerRequestDto.setEmail("test@gmail.com");
-    registerRequestDto.setFirstname("Adam");
-    registerRequestDto.setLastname("Nagy");
-    registerRequestDto.setPassword("test123");
+	AuthenticationService authenticationService;
 
+	@Before
+	public void setUp() throws Exception {
+		authenticationService = Mockito.mock(AuthenticationServiceImpl.class);
+		authenticationController = new AuthenticationController(authenticationService);
+		webTestClient = WebTestClient.bindToController(authenticationController).build();
+	}
 
-  }
+	@Test
+	void register() {
+		RegisterRequestDto registerRequestDto = new RegisterRequestDto();
+		registerRequestDto.setEmail("test@gmail.com");
+		registerRequestDto.setFirstname("Adam");
+		registerRequestDto.setLastname("Nagy");
+		registerRequestDto.setPassword("test123");
 
-  @Test
-  void login() {
-  }
+	}
 
-  @Test
-  void confirm() {
-  }
+	@Test
+	void login() {
+	}
+
+	@Test
+	void confirm() {
+	}
+
 }

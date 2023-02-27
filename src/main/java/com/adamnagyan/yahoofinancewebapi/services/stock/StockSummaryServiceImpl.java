@@ -14,14 +14,15 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class StockSummaryServiceImpl implements StockSummaryService {
 
-  private final StockSummaryMapper stockSummaryMapper;
+	private final StockSummaryMapper stockSummaryMapper;
 
-  @Override
-  public StockSummaryDto getStockSummary(String symbol) throws IOException, BadRequestException {
-    Stock stock = YahooFinance.get(symbol);
-    if (stock == null) {
-      throw new BadRequestException("symbol", "Symbol was not found");
-    }
-    return stockSummaryMapper.stockToStockSummaryDto(stock, stock.getStats(true), stock.getDividend());
-  }
+	@Override
+	public StockSummaryDto getStockSummary(String symbol) throws IOException, BadRequestException {
+		Stock stock = YahooFinance.get(symbol);
+		if (stock == null) {
+			throw new BadRequestException("symbol", "Symbol was not found");
+		}
+		return stockSummaryMapper.stockToStockSummaryDto(stock, stock.getStats(true), stock.getDividend());
+	}
+
 }

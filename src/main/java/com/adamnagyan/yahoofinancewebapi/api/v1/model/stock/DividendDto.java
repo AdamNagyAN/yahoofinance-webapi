@@ -8,6 +8,9 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class DividendDto {
-  private LocalDate date;
-  private double adjDividend;
+
+	private LocalDate date;
+
+	private double adjDividend;
+
 }

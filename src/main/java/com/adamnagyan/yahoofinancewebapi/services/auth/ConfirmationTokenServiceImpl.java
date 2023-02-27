@@ -13,20 +13,21 @@ import java.util.Optional;
 
 public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
-  private final ConfirmationTokenRepository confirmationTokenRepository;
+	private final ConfirmationTokenRepository confirmationTokenRepository;
 
-  public void saveConfirmationToken(ConfirmationToken token) {
-    confirmationTokenRepository.save(token);
-  }
+	public void saveConfirmationToken(ConfirmationToken token) {
+		confirmationTokenRepository.save(token);
+	}
 
-  @Override
-  @SneakyThrows
-  public Optional<ConfirmationToken> getToken(String token) {
-    return confirmationTokenRepository.findByToken(token);
-  }
+	@Override
+	@SneakyThrows
+	public Optional<ConfirmationToken> getToken(String token) {
+		return confirmationTokenRepository.findByToken(token);
+	}
 
-  @Override
-  public Optional<ConfirmationToken> getToken(Long userId) {
-    return confirmationTokenRepository.findByUser(userId);
-  }
+	@Override
+	public Optional<ConfirmationToken> getToken(Long userId) {
+		return confirmationTokenRepository.findByUser(userId);
+	}
+
 }

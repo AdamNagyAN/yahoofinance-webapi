@@ -14,18 +14,20 @@ import java.util.List;
 @Mapper
 public interface DividendPercentageHistoryMapper {
 
-  DividendPercentageHistoryMapper INSTANCE = Mappers.getMapper(DividendPercentageHistoryMapper.class);
+	DividendPercentageHistoryMapper INSTANCE = Mappers.getMapper(DividendPercentageHistoryMapper.class);
 
-  @Mapping(target = "historicalDividendPercentages", source = "dividendPercentageDtoList")
-  @Mapping(target = "currentDividendPercentage", source = "currentDividendYield")
-  @Mapping(target = "averageDividendPercentage", source = "averageDividendYield")
-  DividendPercentageHistoryDto toDividendPercentageHistoryDto(List<DividendPercentageDto> dividendPercentageDtoList, double currentDividendYield, double averageDividendYield, List<String> validTimeFrames);
+	@Mapping(target = "historicalDividendPercentages", source = "dividendPercentageDtoList")
+	@Mapping(target = "currentDividendPercentage", source = "currentDividendYield")
+	@Mapping(target = "averageDividendPercentage", source = "averageDividendYield")
+	DividendPercentageHistoryDto toDividendPercentageHistoryDto(List<DividendPercentageDto> dividendPercentageDtoList,
+			double currentDividendYield, double averageDividendYield, List<String> validTimeFrames);
 
-  DividendPercentageDto toDividendPercentageDto(double dividendPercentage, LocalDate date);
+	DividendPercentageDto toDividendPercentageDto(double dividendPercentage, LocalDate date);
 
-  List<PriceDto> toPriceListDto(List<HistoricalQuote> historicalPrices);
+	List<PriceDto> toPriceListDto(List<HistoricalQuote> historicalPrices);
 
-  @Mapping(source = "close", target = "price")
-  @Mapping(source = "date", target = "date")
-  PriceDto toPriceDto(HistoricalQuote historicalQuote);
+	@Mapping(source = "close", target = "price")
+	@Mapping(source = "date", target = "date")
+	PriceDto toPriceDto(HistoricalQuote historicalQuote);
+
 }

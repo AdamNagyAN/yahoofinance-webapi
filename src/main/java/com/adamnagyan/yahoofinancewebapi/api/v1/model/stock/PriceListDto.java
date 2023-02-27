@@ -8,5 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class PriceListDto {
-  private List<PriceDto> historicalPrices;
+
+	private List<PriceDto> historicalPrices;
+
 }

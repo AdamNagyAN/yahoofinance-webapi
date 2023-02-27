@@ -29,69 +29,76 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Caching
 public class DividendPercentageHistoryServiceImpl implements DividendPercentageHistoryService {
-  public static final String PRICE_KEY = "price-key";
-  private final DividendPercentageHistoryMapper dividendPercentageHistoryMapper;
-  private final DividendHistoryService dividendHistoryService;
-  private final ApplicationContext applicationContext;
 
+	public static final String PRICE_KEY = "price-key";
 
-  private DividendPercentageHistoryService getDividendPercentageHistoryService() {
-    return applicationContext.getBean(DividendPercentageHistoryService.class);
-  }
+	private final DividendPercentageHistoryMapper dividendPercentageHistoryMapper;
 
-  @Override
-  @Cacheable(value = PRICE_KEY, key = "#symbol")
-  public List<PriceDto> getPriceHistory(String symbol) throws IOException, BadRequestException {
-    Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.YEAR, StockTimeFrames.MAX.getValue());
+	private final DividendHistoryService dividendHistoryService;
 
-    Stock stock = YahooFinance.get(symbol);
-    if (stock == null) {
-      throw new BadRequestException("symbol", "Symbol was not found!");
-    }
+	private final ApplicationContext applicationContext;
 
-    return dividendPercentageHistoryMapper.toPriceListDto(stock.getHistory(cal, Interval.DAILY));
-  }
+	private DividendPercentageHistoryService getDividendPercentageHistoryService() {
+		return applicationContext.getBean(DividendPercentageHistoryService.class);
+	}
 
-  @CacheEvict(value = PRICE_KEY, allEntries = true)
-  @Scheduled(fixedRateString = "${caching.spring.price-history}")
-  public void emptyPriceCache() {
-  }
+	@Override
+	@Cacheable(value = PRICE_KEY, key = "#symbol")
+	public List<PriceDto> getPriceHistory(String symbol) throws IOException, BadRequestException {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, StockTimeFrames.MAX.getValue());
 
+		Stock stock = YahooFinance.get(symbol);
+		if (stock == null) {
+			throw new BadRequestException("symbol", "Symbol was not found!");
+		}
 
-  @Override
-  public DividendPercentageHistoryDto getDividendPercentageHistoryDto(String symbol, String timeframe) throws IOException, BadRequestException {
-    Stock stock = YahooFinance.get(symbol);
-    if (stock == null) {
-      throw new BadRequestException("symbol", "Symbol was not found!");
-    }
+		return dividendPercentageHistoryMapper.toPriceListDto(stock.getHistory(cal, Interval.DAILY));
+	}
 
+	@CacheEvict(value = PRICE_KEY, allEntries = true)
+	@Scheduled(fixedRateString = "${caching.spring.price-history}")
+	public void emptyPriceCache() {
+	}
 
-    List<PriceDto> prices = getDividendPercentageHistoryService().getPriceHistory(symbol);
-    List<DividendDto> dividendDtoList = dividendHistoryService.findStockByTicker(symbol, timeframe).getHistoricalDividends();
-    int currentIndex = 0;
-    List<DividendPercentageDto> dividendPercentageDtoList = new ArrayList<>();
+	@Override
+	public DividendPercentageHistoryDto getDividendPercentageHistoryDto(String symbol, String timeframe)
+			throws IOException, BadRequestException {
+		Stock stock = YahooFinance.get(symbol);
+		if (stock == null) {
+			throw new BadRequestException("symbol", "Symbol was not found!");
+		}
 
-    for (PriceDto price : prices) {
-      while (currentIndex < dividendDtoList.size() - 1 && price.getDate().isAfter(dividendDtoList.get(currentIndex + 1).getDate())) {
-        currentIndex++;
-      }
-      if (price.getDate().isAfter(dividendDtoList.get(currentIndex).getDate())) {
-        dividendPercentageDtoList.add(dividendPercentageHistoryMapper.toDividendPercentageDto(
-                dividendDtoList.get(currentIndex).getAdjDividend() * 4 / price.getPrice() * 100,
-                price.getDate()));
-      }
-    }
+		List<PriceDto> prices = getDividendPercentageHistoryService().getPriceHistory(symbol);
+		List<DividendDto> dividendDtoList = dividendHistoryService.findStockByTicker(symbol, timeframe)
+			.getHistoricalDividends();
+		int currentIndex = 0;
+		List<DividendPercentageDto> dividendPercentageDtoList = new ArrayList<>();
 
-    double currentDividendYield = stock.getDividend(true).getAnnualYieldPercent().doubleValue();
-    double averageDividendYield = dividendPercentageDtoList.stream().mapToDouble(DividendPercentageDto::getDividendPercentage).average().orElse(Double.NaN);
+		for (PriceDto price : prices) {
+			while (currentIndex < dividendDtoList.size() - 1
+					&& price.getDate().isAfter(dividendDtoList.get(currentIndex + 1).getDate())) {
+				currentIndex++;
+			}
+			if (price.getDate().isAfter(dividendDtoList.get(currentIndex).getDate())) {
+				dividendPercentageDtoList.add(dividendPercentageHistoryMapper.toDividendPercentageDto(
+						dividendDtoList.get(currentIndex).getAdjDividend() * 4 / price.getPrice() * 100,
+						price.getDate()));
+			}
+		}
 
-    List<String> validTimeFrames = Arrays.stream(StockTimeFrames.values())
-            .map(StockTimeFrames::getName)
-            .collect(Collectors.toList());
+		double currentDividendYield = stock.getDividend(true).getAnnualYieldPercent().doubleValue();
+		double averageDividendYield = dividendPercentageDtoList.stream()
+			.mapToDouble(DividendPercentageDto::getDividendPercentage)
+			.average()
+			.orElse(Double.NaN);
 
-    return dividendPercentageHistoryMapper.toDividendPercentageHistoryDto(dividendPercentageDtoList, currentDividendYield, averageDividendYield, validTimeFrames);
-  }
+		List<String> validTimeFrames = Arrays.stream(StockTimeFrames.values())
+			.map(StockTimeFrames::getName)
+			.collect(Collectors.toList());
 
+		return dividendPercentageHistoryMapper.toDividendPercentageHistoryDto(dividendPercentageDtoList,
+				currentDividendYield, averageDividendYield, validTimeFrames);
+	}
 
 }

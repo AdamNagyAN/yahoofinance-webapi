@@ -19,41 +19,36 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-  private final JwtAuthenticationFilter jwtAuthFilter;
-  private final AuthenticationProvider authenticationProvider;
+	private final JwtAuthenticationFilter jwtAuthFilter;
 
-  private static final String[] AUTH_WHITELIST = {
-          "/swagger-ui/**",
-          "/swagger-resources/**",
-          "/swagger-ui.html",
-          "/v2/api-docs",
-          "/webjars/**",
-          "/api/v1/auth/**",
-          "/api/v1/symbol/**",
-          "/h2-console/**"
-  };
+	private final AuthenticationProvider authenticationProvider;
 
+	private static final String[] AUTH_WHITELIST = { "/swagger-ui/**", "/swagger-resources/**", "/swagger-ui.html",
+			"/v2/api-docs", "/webjars/**", "/api/v1/auth/**", "/api/v1/symbol/**", "/h2-console/**" };
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http, RecaptchaService recaptchaService) throws Exception {
-    http
-            .cors().and().csrf()
-            .disable()
-            .authorizeHttpRequests()
-            .antMatchers(AUTH_WHITELIST)
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(new RecaptchaFilter(recaptchaService), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-    return http.build();
-  }
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http, RecaptchaService recaptchaService)
+			throws Exception {
+		http.cors()
+			.and()
+			.csrf()
+			.disable()
+			.authorizeHttpRequests()
+			.antMatchers(AUTH_WHITELIST)
+			.permitAll()
+			.anyRequest()
+			.authenticated()
+			.and()
+			.exceptionHandling()
+			.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+			.and()
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.authenticationProvider(authenticationProvider)
+			.addFilterBefore(new RecaptchaFilter(recaptchaService), UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
+
 }
