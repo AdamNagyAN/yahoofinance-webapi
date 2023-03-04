@@ -11,14 +11,12 @@ import com.adamnagyan.yahoofinancewebapi.exceptions.UserIsAlreadyEnabledExceptio
 import com.adamnagyan.yahoofinancewebapi.model.user.ConfirmationToken;
 import com.adamnagyan.yahoofinancewebapi.model.user.Role;
 import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.repositories.user.UserRepository;
 import com.adamnagyan.yahoofinancewebapi.services.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -36,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final AuthenticationManager authenticationManager;
 
-	private final UserRepository userRepository;
+	private final UserService userService;
 
 	private final PasswordEncoder passwordEncoder;
 
@@ -55,7 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	@Override
 	@Transactional
 	public void register(RegisterRequestDto request) throws UserAlreadyExistAuthenticationException {
-		if (userRepository.existsByEmail(request.getEmail())) {
+		if (userService.existsByEmail(request.getEmail())) {
 			throw new UserAlreadyExistAuthenticationException();
 		}
 		User user = User.builder()
@@ -65,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			.password(passwordEncoder.encode(request.getPassword()))
 			.role(Role.USER)
 			.build();
-		userRepository.save(user);
+		userService.updateUser(user);
 		generateConfirmationEmail(user);
 	}
 
@@ -73,8 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	@SneakyThrows
 	@Transactional
 	public void sendConfirmationEmail(String email) {
-		User user = userRepository.findByEmail(email)
-			.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+		User user = userService.getUserByEmail(email);
 		if (user.getEnabled()) {
 			throw new UserIsAlreadyEnabledException();
 		}
@@ -103,7 +100,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	public AuthenticationResponseDto login(AuthenticationRequestDto request) {
 		authenticationManager
 			.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-		User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+		User user = userService.getUserByEmail(request.getEmail());
 		HashMap<String, Object> extraClaims = new HashMap<>();
 		extraClaims.put("firstname", user.getFirstName());
 		extraClaims.put("lastname", user.getLastName());
@@ -128,11 +125,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 		confirmationToken.setConfirmedAt(LocalDateTime.now());
 		confirmationTokenService.saveConfirmationToken(confirmationToken);
-		User user = userRepository.findByEmail(confirmationToken.getUser().getEmail())
-			.orElseThrow(() -> new UsernameNotFoundException("user not found"));
+		User user = userService.getUserByEmail(confirmationToken.getUser().getEmail());
 		user.setEnabled(true);
 		confirmationTokenService.deleteAllByUser(user);
-		userRepository.save(user);
+		userService.updateUser(user);
 	}
 
 	private String buildEmail(User user, String link) {

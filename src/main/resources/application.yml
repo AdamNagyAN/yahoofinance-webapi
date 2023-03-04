@@ -26,6 +26,7 @@ spring:
 
 auth:
   confirmation-token-expiration-minutes: 15
+  new-password-token-expiration-minutes: 15
 
 caching:
   spring:

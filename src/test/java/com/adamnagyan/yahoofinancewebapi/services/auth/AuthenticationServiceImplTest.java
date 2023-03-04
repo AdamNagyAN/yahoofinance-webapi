@@ -10,28 +10,23 @@ import com.adamnagyan.yahoofinancewebapi.exceptions.UserIsAlreadyEnabledExceptio
 import com.adamnagyan.yahoofinancewebapi.model.user.ConfirmationToken;
 import com.adamnagyan.yahoofinancewebapi.model.user.Role;
 import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.repositories.user.UserRepository;
 import com.adamnagyan.yahoofinancewebapi.services.email.EmailService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class AuthenticationServiceImplTest {
 
 	AuthenticationServiceImpl authenticationService;
@@ -44,7 +39,7 @@ public class AuthenticationServiceImplTest {
 	AuthenticationManager authenticationManager;
 
 	@Mock
-	UserRepository userRepository;
+	UserService userService;
 
 	@Mock
 	PasswordEncoder passwordEncoder;
@@ -64,8 +59,8 @@ public class AuthenticationServiceImplTest {
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
 		authenticationMapper = AuthenticationRequestMapper.INSTANCE;
-		authenticationService = new AuthenticationServiceImpl(authenticationMapper, authenticationManager,
-				userRepository, passwordEncoder, confirmationTokenService, emailService, jwtService);
+		authenticationService = new AuthenticationServiceImpl(authenticationMapper, authenticationManager, userService,
+				passwordEncoder, confirmationTokenService, emailService, jwtService);
 		ReflectionTestUtils.setField(authenticationService, "confirmUrl", CONFIRM_URL);
 		ReflectionTestUtils.setField(authenticationService, "confirmationTokenExpiry", TOKEN_EXPIRY);
 		mockedAuthenticationService = Mockito.spy(authenticationService);
@@ -74,7 +69,7 @@ public class AuthenticationServiceImplTest {
 	@Test(expected = UserAlreadyExistAuthenticationException.class)
 	public void registerExistingUser() throws UserAlreadyExistAuthenticationException {
 		RegisterRequestDto request = new RegisterRequestDto("Adam", "Nagy", "adam@b.com", "test123");
-		when(userRepository.existsByEmail(Mockito.anyString())).thenReturn(true);
+		when(userService.existsByEmail(Mockito.anyString())).thenReturn(true);
 		authenticationService.register(request);
 	}
 
@@ -97,21 +92,14 @@ public class AuthenticationServiceImplTest {
 		try (MockedStatic<LocalDateTime> topDateTimeUtilMock = Mockito.mockStatic(LocalDateTime.class)) {
 			topDateTimeUtilMock.when(LocalDateTime::now).thenReturn(localDateTime);
 
-			when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+			when(userService.existsByEmail(Mockito.anyString())).thenReturn(false);
 			when(passwordEncoder.encode(Mockito.anyString())).thenReturn("shouldBeHashed");
 			when(jwtService.generateToken(extraClaims, user)).thenReturn("jwtToken");
 			mockedAuthenticationService.register(request);
-			verify(userRepository).existsByEmail(user.getEmail());
-			verify(userRepository).save(user);
+			verify(userService).existsByEmail(user.getEmail());
+			verify(userService).updateUser(user);
 			verify(mockedAuthenticationService).generateConfirmationEmail(user);
 		}
-	}
-
-	@Test(expected = UsernameNotFoundException.class)
-	public void sendConfirmationEmailToNotExistingEmail() {
-		User user = new User();
-		when(userRepository.findByEmail("test@b.com")).thenReturn(Optional.of(user));
-		authenticationService.sendConfirmationEmail("asd@gmail.com");
 	}
 
 	@Test(expected = UserIsAlreadyEnabledException.class)
@@ -124,7 +112,7 @@ public class AuthenticationServiceImplTest {
 			.password("shouldBeHashed")
 			.enabled(true)
 			.build();
-		when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(user));
+		when(userService.getUserByEmail(Mockito.anyString())).thenReturn(user);
 		authenticationService.sendConfirmationEmail("asd@gmail.com");
 	}
 
@@ -144,7 +132,7 @@ public class AuthenticationServiceImplTest {
 				.role(Role.USER)
 				.password("shouldBeHashed")
 				.build();
-			when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(user));
+			when(userService.getUserByEmail(Mockito.anyString())).thenReturn(user);
 			mockedAuthenticationService.sendConfirmationEmail(user.getEmail());
 			verify(confirmationTokenService).deleteAllByUser(user);
 			verify(mockedAuthenticationService).generateConfirmationEmail(user);
@@ -181,13 +169,6 @@ public class AuthenticationServiceImplTest {
 		}
 	}
 
-	@Test(expected = NoSuchElementException.class)
-  public void authenticateUserNotFound() {
-    when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-    authenticationService.login(new AuthenticationRequestDto("asd@gmail.com", "asdasd"));
-    verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-  }
-
 	@Test
 	public void authenticate() {
 
@@ -202,7 +183,7 @@ public class AuthenticationServiceImplTest {
 		HashMap<String, Object> extraClaims = new HashMap<>();
 		extraClaims.put("firstname", user.getFirstName());
 		extraClaims.put("lastname", user.getLastName());
-		when(userRepository.findByEmail("user@gmail.com")).thenReturn(Optional.of(user));
+		when(userService.getUserByEmail("user@gmail.com")).thenReturn(user);
 		when(jwtService.generateToken(extraClaims, user)).thenReturn("testToken");
 		AuthenticationResponseDto result = authenticationService
 			.login(new AuthenticationRequestDto("user@gmail.com", "asdasd"));
@@ -263,13 +244,13 @@ public class AuthenticationServiceImplTest {
 				.user(user)
 				.build();
 			when(confirmationTokenService.getToken(anyString())).thenReturn(Optional.of(confirmationToken));
-			when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
-			System.out.println(userRepository.findByEmail(user.getEmail()));
+			when(userService.getUserByEmail(anyString())).thenReturn(user);
+			System.out.println(userService.getUserByEmail(user.getEmail()));
 			authenticationService.confirmRegistrationToken(token);
 			ArgumentCaptor<ConfirmationToken> tokenCaptor = ArgumentCaptor.forClass(ConfirmationToken.class);
 			ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 			verify(confirmationTokenService).saveConfirmationToken(tokenCaptor.capture());
-			verify(userRepository).save(userArgumentCaptor.capture());
+			verify(userService).updateUser(userArgumentCaptor.capture());
 
 			Assert.assertEquals(tokenCaptor.getValue().getConfirmedAt(), localDateTime);
 			Assert.assertEquals(userArgumentCaptor.getValue().getEnabled(), true);
