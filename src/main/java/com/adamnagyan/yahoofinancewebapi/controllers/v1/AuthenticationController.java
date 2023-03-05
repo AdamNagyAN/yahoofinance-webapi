@@ -1,11 +1,10 @@
 package com.adamnagyan.yahoofinancewebapi.controllers.v1;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.AuthenticationRequestDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.AuthenticationResponseDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.RegisterRequestDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.ResendRequestDto;
+import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.*;
 import com.adamnagyan.yahoofinancewebapi.exceptions.UserAlreadyExistAuthenticationException;
 import com.adamnagyan.yahoofinancewebapi.services.auth.AuthenticationService;
+import com.adamnagyan.yahoofinancewebapi.services.auth.ConfirmationTokenService;
+import com.adamnagyan.yahoofinancewebapi.services.auth.NewPasswordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +17,10 @@ import javax.validation.Valid;
 public class AuthenticationController {
 
 	private final AuthenticationService service;
+
+	private final ConfirmationTokenService confirmationTokenService;
+
+	private final NewPasswordService newPasswordService;
 
 	@PostMapping("/register")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -35,13 +38,25 @@ public class AuthenticationController {
 	@GetMapping("/confirm")
 	@ResponseStatus(HttpStatus.OK)
 	public void confirm(@RequestParam("token") String token) {
-		service.confirmRegistrationToken(token);
+		confirmationTokenService.confirmRegistrationToken(token);
 	}
 
 	@PostMapping("/resend-email")
 	@ResponseStatus(HttpStatus.OK)
 	public void resendEmail(@Valid @RequestBody ResendRequestDto request) {
-		service.sendConfirmationEmail(request.getEmail());
+		confirmationTokenService.sendConfirmationEmail(request.getEmail());
+	}
+
+	@PostMapping("/new-password")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void newPassword(@Valid @RequestBody EmailRequestDto requestDto) {
+		newPasswordService.generateNewPasswordToken(requestDto.getEmail());
+	}
+
+	@PutMapping("/change-password")
+	@ResponseStatus(HttpStatus.OK)
+	public void changePassword(@Valid @RequestBody ResetPasswordDto request) {
+		newPasswordService.changePassword(request.getToken(), request.getPassword());
 	}
 
 }

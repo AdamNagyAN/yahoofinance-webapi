@@ -6,17 +6,18 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Entity
 @ToString
-public class ConfirmationToken {
+public class NewPasswordToken {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", nullable = false)
 	private Long id;
 
 	private String token;
@@ -36,7 +37,7 @@ public class ConfirmationToken {
 		if (o == null || getClass() != o.getClass())
 			return false;
 
-		ConfirmationToken that = (ConfirmationToken) o;
+		NewPasswordToken that = (NewPasswordToken) o;
 
 		if (!Objects.equals(id, that.id))
 			return false;

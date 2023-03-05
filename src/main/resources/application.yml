@@ -26,6 +26,7 @@ spring:
 
 auth:
   confirmation-token-expiration-minutes: 15
+  new-password-token-expiration-minutes: 15
 
 caching:
   spring:
@@ -40,6 +41,7 @@ external-apis:
   yahoofinance-balance-sheet: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=balanceSheetHistory
   yahoofinance-balance-sheet-quarterly: https://query1.finance.yahoo.com/v11/finance/quoteSummary/{symbol}?modules=balanceSheetHistoryQuarterly
   confirm-email: ${CONFIRMATION_EMAIL_REDIRECT}
+  reset-password-email: ${RESET_PASSWORD_EMAIL_REDIRECT}
 
 google:
   recaptcha:

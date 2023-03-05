@@ -5,20 +5,20 @@ logging:
         security: INFO
 
 spring:
+  mail:
+    host: localhost
+    port: 99999
+    username: test
+    password: test
+    sender: test
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MYSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  mail:
-    host: localhost
-    port: 587
-    username: dividend-portfolio@example.com
-    password: test
-    sender: dividend-portfolio@example.com
-  datasource:
-    url: jdbc:mysql://localhost:3306/div-inv
-    username: root
-    password: admin
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -32,4 +32,11 @@ spring:
 
 external-apis:
   confirm-email: 'https://dividend-portfolio.netlify.app/confirm'
+  reset-password-email: 'https://dividend-portfolio.netlify.app/confirm'
+
+google:
+  recaptcha:
+    key:
+      secret-key: test
+      verify-url: https://www.google.com/recaptcha/api/siteverify
 

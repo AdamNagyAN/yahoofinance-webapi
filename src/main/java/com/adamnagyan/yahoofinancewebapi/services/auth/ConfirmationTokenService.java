@@ -1,15 +1,13 @@
 package com.adamnagyan.yahoofinancewebapi.services.auth;
 
-import com.adamnagyan.yahoofinancewebapi.model.user.ConfirmationToken;
-
-import java.util.Optional;
+import com.adamnagyan.yahoofinancewebapi.model.user.User;
 
 public interface ConfirmationTokenService {
 
-	public void saveConfirmationToken(ConfirmationToken token);
+	void generateConfirmationEmail(User user);
 
-	public Optional<ConfirmationToken> getToken(String token);
+	void sendConfirmationEmail(String email);
 
-	public Optional<ConfirmationToken> getToken(Long userId);
+	void confirmRegistrationToken(String token);
 
 }
