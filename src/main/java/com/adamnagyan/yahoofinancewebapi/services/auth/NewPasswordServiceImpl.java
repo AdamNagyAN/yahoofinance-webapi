@@ -4,11 +4,13 @@ import com.adamnagyan.yahoofinancewebapi.exceptions.ConfirmationTokenExpiredExce
 import com.adamnagyan.yahoofinancewebapi.model.user.NewPasswordToken;
 import com.adamnagyan.yahoofinancewebapi.model.user.User;
 import com.adamnagyan.yahoofinancewebapi.repositories.user.NewPasswordTokenRepository;
+import com.adamnagyan.yahoofinancewebapi.services.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -25,8 +27,13 @@ public class NewPasswordServiceImpl implements NewPasswordService {
 
 	private final PasswordEncoder passwordEncoder;
 
+	private final EmailService emailService;
+
 	@Value("${auth.new-password-token-expiration-minutes}")
 	private Integer expiryTime = 5;
+
+	@Value("${external-apis.reset-password-email}")
+	private String redirectLink;
 
 	@Override
 	@Transactional
@@ -40,6 +47,10 @@ public class NewPasswordServiceImpl implements NewPasswordService {
 			.user(user)
 			.build();
 		newPasswordTokenRepository.save(newPasswordToken);
+		String newPasswordLinkWithToken = UriComponentsBuilder.fromHttpUrl(redirectLink)
+			.queryParam("token", newPasswordToken.getToken())
+			.toUriString();
+		emailService.send(email, newPasswordLinkWithToken);
 	}
 
 	@SneakyThrows

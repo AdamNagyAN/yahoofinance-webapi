@@ -3,6 +3,7 @@ package com.adamnagyan.yahoofinancewebapi.controllers.v1;
 import com.adamnagyan.yahoofinancewebapi.api.v1.model.auth.*;
 import com.adamnagyan.yahoofinancewebapi.exceptions.UserAlreadyExistAuthenticationException;
 import com.adamnagyan.yahoofinancewebapi.services.auth.AuthenticationService;
+import com.adamnagyan.yahoofinancewebapi.services.auth.ConfirmationTokenService;
 import com.adamnagyan.yahoofinancewebapi.services.auth.NewPasswordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import javax.validation.Valid;
 public class AuthenticationController {
 
 	private final AuthenticationService service;
+
+	private final ConfirmationTokenService confirmationTokenService;
 
 	private final NewPasswordService newPasswordService;
 
@@ -35,13 +38,13 @@ public class AuthenticationController {
 	@GetMapping("/confirm")
 	@ResponseStatus(HttpStatus.OK)
 	public void confirm(@RequestParam("token") String token) {
-		service.confirmRegistrationToken(token);
+		confirmationTokenService.confirmRegistrationToken(token);
 	}
 
 	@PostMapping("/resend-email")
 	@ResponseStatus(HttpStatus.OK)
 	public void resendEmail(@Valid @RequestBody ResendRequestDto request) {
-		service.sendConfirmationEmail(request.getEmail());
+		confirmationTokenService.sendConfirmationEmail(request.getEmail());
 	}
 
 	@PostMapping("/new-password")

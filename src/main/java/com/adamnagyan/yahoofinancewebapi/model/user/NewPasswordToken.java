@@ -26,7 +26,7 @@ public class NewPasswordToken {
 
 	private LocalDateTime expiresAt;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(nullable = false, name = "user_id")
 	private User user;
 

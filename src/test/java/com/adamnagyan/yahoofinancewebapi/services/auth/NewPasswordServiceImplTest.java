@@ -4,6 +4,7 @@ import com.adamnagyan.yahoofinancewebapi.exceptions.ConfirmationTokenExpiredExce
 import com.adamnagyan.yahoofinancewebapi.model.user.NewPasswordToken;
 import com.adamnagyan.yahoofinancewebapi.model.user.User;
 import com.adamnagyan.yahoofinancewebapi.repositories.user.NewPasswordTokenRepository;
+import com.adamnagyan.yahoofinancewebapi.services.email.EmailService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -25,6 +26,8 @@ public class NewPasswordServiceImplTest {
 
 	private static final String TEST_EMAIL = "test@gmail.com";
 
+	private static final String REDIRECT_LINK = "https://test";
+
 	private static final Integer TOKEN_EXPIRY = 15;
 
 	private NewPasswordServiceImpl newPasswordService;
@@ -38,11 +41,17 @@ public class NewPasswordServiceImplTest {
 	@Mock
 	private UserService userService;
 
+	@Mock
+	private EmailService emailService;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
-		this.newPasswordService = new NewPasswordServiceImpl(newPasswordTokenRepository, userService, passwordEncoder);
+		this.newPasswordService = new NewPasswordServiceImpl(newPasswordTokenRepository, userService, passwordEncoder,
+				emailService);
 		ReflectionTestUtils.setField(newPasswordService, "expiryTime", TOKEN_EXPIRY);
+		ReflectionTestUtils.setField(newPasswordService, "expiryTime", TOKEN_EXPIRY);
+		ReflectionTestUtils.setField(newPasswordService, "redirectLink", REDIRECT_LINK);
 
 	}
 
@@ -69,6 +78,7 @@ public class NewPasswordServiceImplTest {
 			verify(userService).getUserByEmail(TEST_EMAIL);
 			verify(newPasswordTokenRepository).deleteAllByUser(user);
 			verify(newPasswordTokenRepository).save(newPasswordToken);
+			verify(emailService).send(eq(TEST_EMAIL), anyString());
 
 		}
 	}

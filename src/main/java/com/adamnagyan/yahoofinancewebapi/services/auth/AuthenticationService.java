@@ -9,10 +9,6 @@ public interface AuthenticationService {
 
 	void register(RegisterRequestDto request) throws UserAlreadyExistAuthenticationException;
 
-	void sendConfirmationEmail(String email);
-
 	AuthenticationResponseDto login(AuthenticationRequestDto request);
-
-	void confirmRegistrationToken(String token);
 
 }
