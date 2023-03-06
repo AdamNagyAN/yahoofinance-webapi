@@ -18,6 +18,7 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class User implements UserDetails {
 
 	@Id
