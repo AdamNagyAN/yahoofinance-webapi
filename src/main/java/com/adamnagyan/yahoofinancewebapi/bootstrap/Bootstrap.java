@@ -6,6 +6,7 @@ import com.adamnagyan.yahoofinancewebapi.repositories.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Profile("dev")
 public class Bootstrap implements CommandLineRunner {
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
   @Override
   public void run(String... args) throws Exception {
     initUser();
@@ -23,7 +25,7 @@ public class Bootstrap implements CommandLineRunner {
   private void initUser() {
     User user = User.builder()
             .email("test@gmail.com")
-            .password("string")
+            .password(passwordEncoder.encode("string"))
             .firstName("Adam")
             .lastName("Nagy")
             .role(Role.USER)
