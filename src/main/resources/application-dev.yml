@@ -15,7 +15,7 @@ spring:
     password: test
     sender: dividend-portfolio@example.com
   datasource:
-    url: jdbc:mysql://localhost:3306/div-inv
+    url: jdbc:mysql://localhost:3306/DIV_INV
     username: root
     password: admin
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -32,4 +32,5 @@ spring:
 
 external-apis:
   confirm-email: 'https://dividend-portfolio.netlify.app/confirm'
+  reset-password-email: 'https://dividend-portfolio.netlify.app/login'
 

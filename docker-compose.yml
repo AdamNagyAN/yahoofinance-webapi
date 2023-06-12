@@ -1,0 +1,13 @@
+services:
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+    ports:
+      - 3306:3306
+  email-service:
+    image: namshi/smtp
+    restart: always
+    ports:
+      - 587:25
