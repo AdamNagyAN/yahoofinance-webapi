@@ -1,7 +1,9 @@
 package com.adamnagyan.yahoofinancewebapi.services.auth;
 
-import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.repositories.user.UserRepository;
+import com.adamnagyan.yahoofinancewebapi.auth.model.User;
+import com.adamnagyan.yahoofinancewebapi.auth.respository.UserRepository;
+import com.adamnagyan.yahoofinancewebapi.auth.service.UserService;
+import com.adamnagyan.yahoofinancewebapi.auth.service.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

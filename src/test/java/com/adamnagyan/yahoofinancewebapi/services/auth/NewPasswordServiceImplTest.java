@@ -1,10 +1,12 @@
 package com.adamnagyan.yahoofinancewebapi.services.auth;
 
-import com.adamnagyan.yahoofinancewebapi.exceptions.ConfirmationTokenExpiredException;
-import com.adamnagyan.yahoofinancewebapi.model.user.NewPasswordToken;
-import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.repositories.user.NewPasswordTokenRepository;
-import com.adamnagyan.yahoofinancewebapi.services.email.EmailService;
+import com.adamnagyan.yahoofinancewebapi.auth.model.NewPasswordToken;
+import com.adamnagyan.yahoofinancewebapi.auth.model.User;
+import com.adamnagyan.yahoofinancewebapi.auth.respository.NewPasswordTokenRepository;
+import com.adamnagyan.yahoofinancewebapi.auth.service.NewPasswordServiceImpl;
+import com.adamnagyan.yahoofinancewebapi.auth.service.UserService;
+import com.adamnagyan.yahoofinancewebapi.common.exceptions.ConfirmationTokenExpiredException;
+import com.adamnagyan.yahoofinancewebapi.common.services.EmailService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

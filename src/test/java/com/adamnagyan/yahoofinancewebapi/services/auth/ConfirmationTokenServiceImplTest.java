@@ -1,12 +1,15 @@
 package com.adamnagyan.yahoofinancewebapi.services.auth;
 
-import com.adamnagyan.yahoofinancewebapi.exceptions.ConfirmationTokenExpiredException;
-import com.adamnagyan.yahoofinancewebapi.exceptions.UserIsAlreadyEnabledException;
-import com.adamnagyan.yahoofinancewebapi.model.user.ConfirmationToken;
-import com.adamnagyan.yahoofinancewebapi.model.user.Role;
-import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.repositories.user.ConfirmationTokenRepository;
-import com.adamnagyan.yahoofinancewebapi.services.email.EmailService;
+import com.adamnagyan.yahoofinancewebapi.auth.model.ConfirmationToken;
+import com.adamnagyan.yahoofinancewebapi.auth.model.Role;
+import com.adamnagyan.yahoofinancewebapi.auth.model.User;
+import com.adamnagyan.yahoofinancewebapi.auth.respository.ConfirmationTokenRepository;
+import com.adamnagyan.yahoofinancewebapi.auth.service.ConfirmationTokenService;
+import com.adamnagyan.yahoofinancewebapi.auth.service.ConfirmationTokenServiceImpl;
+import com.adamnagyan.yahoofinancewebapi.auth.service.UserService;
+import com.adamnagyan.yahoofinancewebapi.common.exceptions.ConfirmationTokenExpiredException;
+import com.adamnagyan.yahoofinancewebapi.common.exceptions.UserIsAlreadyEnabledException;
+import com.adamnagyan.yahoofinancewebapi.common.services.EmailService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
