@@ -1,12 +1,12 @@
-package com.adamnagyan.yahoofinancewebapi.services.user_stock;
+package com.adamnagyan.yahoofinancewebapi.user_stock.service;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.StockHistoryMapper;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock.StockHistoryListDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock.UserStockHistoryItemRequestDto;
-import com.adamnagyan.yahoofinancewebapi.exceptions.BaseAppExceptionFactory;
-import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.model.user_stock.StockHistoryItem;
-import com.adamnagyan.yahoofinancewebapi.repositories.user_stock.UserStockRepository;
+import com.adamnagyan.yahoofinancewebapi.auth.model.User;
+import com.adamnagyan.yahoofinancewebapi.common.exceptions.BaseAppExceptionFactory;
+import com.adamnagyan.yahoofinancewebapi.user_stock.dto.StockHistoryListDto;
+import com.adamnagyan.yahoofinancewebapi.user_stock.dto.UserStockHistoryItemRequestDto;
+import com.adamnagyan.yahoofinancewebapi.user_stock.mapper.StockHistoryMapper;
+import com.adamnagyan.yahoofinancewebapi.user_stock.model.StockHistoryItem;
+import com.adamnagyan.yahoofinancewebapi.user_stock.respository.UserStockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;

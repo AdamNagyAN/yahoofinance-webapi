@@ -1,4 +1,4 @@
-package com.adamnagyan.yahoofinancewebapi.api.v1.model;
+package com.adamnagyan.yahoofinancewebapi.common.dto;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,10 +1,10 @@
-package com.adamnagyan.yahoofinancewebapi.controllers.v1;
+package com.adamnagyan.yahoofinancewebapi.user_stock.controller;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock.StockHistoryListDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock.UserStockHistoryItemRequestDto;
-import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.services.auth.UserService;
-import com.adamnagyan.yahoofinancewebapi.services.user_stock.UserStockHistoryService;
+import com.adamnagyan.yahoofinancewebapi.auth.model.User;
+import com.adamnagyan.yahoofinancewebapi.auth.service.UserService;
+import com.adamnagyan.yahoofinancewebapi.user_stock.dto.StockHistoryListDto;
+import com.adamnagyan.yahoofinancewebapi.user_stock.dto.UserStockHistoryItemRequestDto;
+import com.adamnagyan.yahoofinancewebapi.user_stock.service.UserStockHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

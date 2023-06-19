@@ -1,4 +1,4 @@
-package com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock;
+package com.adamnagyan.yahoofinancewebapi.user_stock.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

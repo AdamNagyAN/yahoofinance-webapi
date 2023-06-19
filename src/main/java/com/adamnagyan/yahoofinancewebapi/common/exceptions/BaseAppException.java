@@ -1,4 +1,4 @@
-package com.adamnagyan.yahoofinancewebapi.exceptions;
+package com.adamnagyan.yahoofinancewebapi.common.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

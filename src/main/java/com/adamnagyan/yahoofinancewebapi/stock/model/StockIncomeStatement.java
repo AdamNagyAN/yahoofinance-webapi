@@ -16,49 +16,49 @@ public class StockIncomeStatement {
 
 	public Date endDate;
 
-	public Long totalRevenue = 0L;
+	public Long totalRevenue;
 
-	public Long costOfRevenue = 0L;
+	public Long costOfRevenue;
 
-	public Long grossProfit = 0L;
+	public Long grossProfit;
 
-	public Long researchDevelopment = 0L;
+	public Long researchDevelopment;
 
-	public Long sellingGeneralAdministrative = 0L;
+	public Long sellingGeneralAdministrative;
 
-	public Long nonRecurring = 0L;
+	public Long nonRecurring;
 
-	public Long otherOperatingExpenses = 0L;
+	public Long otherOperatingExpenses;
 
-	public Long totalOperatingExpenses = 0L;
+	public Long totalOperatingExpenses;
 
-	public Long operatingIncome = 0L;
+	public Long operatingIncome;
 
-	public Long totalOtherIncomeExpenseNet = 0L;
+	public Long totalOtherIncomeExpenseNet;
 
-	public Long ebit = 0L;
+	public Long ebit;
 
-	public Long interestExpense = 0L;
+	public Long interestExpense;
 
-	public Long incomeBeforeTax = 0L;
+	public Long incomeBeforeTax;
 
-	public Long incomeTaxExpense = 0L;
+	public Long incomeTaxExpense;
 
-	public Long minorityInterest = 0L;
+	public Long minorityInterest;
 
-	public Long netIncomeFromContinuingOps = 0L;
+	public Long netIncomeFromContinuingOps;
 
-	public Long discontinuedOperations = 0L;
+	public Long discontinuedOperations;
 
-	public Long extraordinaryItems = 0L;
+	public Long extraordinaryItems;
 
-	public Long effectOfAccountingCharges = 0L;
+	public Long effectOfAccountingCharges;
 
-	public Long otherItems = 0L;
+	public Long otherItems;
 
-	public Long netIncome = 0L;
+	public Long netIncome;
 
-	public Long netIncomeApplicableToCommonShares = 0L;
+	public Long netIncomeApplicableToCommonShares;
 
 	public StockIncomeStatement add(StockIncomeStatement that) {
 		return StockIncomeStatement.builder()

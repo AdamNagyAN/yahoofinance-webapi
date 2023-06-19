@@ -1,10 +1,10 @@
 package com.adamnagyan.yahoofinancewebapi.bootstrap;
 
-import com.adamnagyan.yahoofinancewebapi.model.user.Role;
-import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.model.user_stock.StockHistoryItem;
-import com.adamnagyan.yahoofinancewebapi.repositories.user.UserRepository;
-import com.adamnagyan.yahoofinancewebapi.repositories.user_stock.UserStockRepository;
+import com.adamnagyan.yahoofinancewebapi.auth.model.Role;
+import com.adamnagyan.yahoofinancewebapi.auth.model.User;
+import com.adamnagyan.yahoofinancewebapi.auth.respository.UserRepository;
+import com.adamnagyan.yahoofinancewebapi.user_stock.model.StockHistoryItem;
+import com.adamnagyan.yahoofinancewebapi.user_stock.respository.UserStockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;

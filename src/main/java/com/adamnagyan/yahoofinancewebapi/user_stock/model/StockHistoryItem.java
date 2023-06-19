@@ -1,6 +1,6 @@
-package com.adamnagyan.yahoofinancewebapi.model.user_stock;
+package com.adamnagyan.yahoofinancewebapi.user_stock.model;
 
-import com.adamnagyan.yahoofinancewebapi.model.user.User;
+import com.adamnagyan.yahoofinancewebapi.auth.model.User;
 import lombok.*;
 import org.hibernate.Hibernate;
 

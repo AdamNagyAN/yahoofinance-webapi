@@ -1,9 +1,9 @@
-package com.adamnagyan.yahoofinancewebapi.api.v1.mapper;
+package com.adamnagyan.yahoofinancewebapi.user_stock.mapper;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock.StockHistoryItemDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock.StockHistoryListDto;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock.UserStockHistoryItemRequestDto;
-import com.adamnagyan.yahoofinancewebapi.model.user_stock.StockHistoryItem;
+import com.adamnagyan.yahoofinancewebapi.user_stock.dto.StockHistoryItemDto;
+import com.adamnagyan.yahoofinancewebapi.user_stock.dto.StockHistoryListDto;
+import com.adamnagyan.yahoofinancewebapi.user_stock.dto.UserStockHistoryItemRequestDto;
+import com.adamnagyan.yahoofinancewebapi.user_stock.model.StockHistoryItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

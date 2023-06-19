@@ -1,10 +1,11 @@
 package com.adamnagyan.yahoofinancewebapi.services.user_stock;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.mapper.StockHistoryMapper;
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.user_stock.UserStockHistoryItemRequestDto;
-import com.adamnagyan.yahoofinancewebapi.model.user.User;
-import com.adamnagyan.yahoofinancewebapi.model.user_stock.StockHistoryItem;
-import com.adamnagyan.yahoofinancewebapi.repositories.user_stock.UserStockRepository;
+import com.adamnagyan.yahoofinancewebapi.auth.model.User;
+import com.adamnagyan.yahoofinancewebapi.user_stock.dto.UserStockHistoryItemRequestDto;
+import com.adamnagyan.yahoofinancewebapi.user_stock.mapper.StockHistoryMapper;
+import com.adamnagyan.yahoofinancewebapi.user_stock.model.StockHistoryItem;
+import com.adamnagyan.yahoofinancewebapi.user_stock.respository.UserStockRepository;
+import com.adamnagyan.yahoofinancewebapi.user_stock.service.UserStockHistoryServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

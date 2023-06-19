@@ -1,6 +1,6 @@
-package com.adamnagyan.yahoofinancewebapi.exceptions;
+package com.adamnagyan.yahoofinancewebapi.common.exceptions;
 
-import com.adamnagyan.yahoofinancewebapi.api.v1.model.ExceptionDto;
+import com.adamnagyan.yahoofinancewebapi.common.dto.ExceptionDto;
 import org.mapstruct.Mapper;
 
 @Mapper
