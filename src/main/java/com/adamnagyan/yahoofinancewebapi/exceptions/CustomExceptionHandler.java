@@ -1,5 +1,7 @@
 package com.adamnagyan.yahoofinancewebapi.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSendException;
@@ -18,7 +20,9 @@ import java.util.Date;
 import java.util.List;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class CustomExceptionHandler {
+	private final BaseAppExceptionMapper baseAppExceptionMapper;
 
 	@ExceptionHandler(BadRequestException.class)
 	public ResponseEntity<?> badRequestExceptionHandling(BadRequestException ex) {
@@ -31,6 +35,13 @@ public class CustomExceptionHandler {
 	public ResponseEntity<?> generalExceptionHandling() {
 		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_GENERAL_ERROR, new Date()), HttpStatus.BAD_REQUEST);
 	}
+
+	@ExceptionHandler(BaseAppException.class)
+	public ResponseEntity<?> baseAppExceptionHandling(BaseAppException ex) {
+		return new ResponseEntity<>(baseAppExceptionMapper.toExceptionDto(ex), ex.getHttpStatus());
+	}
+
+
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,6 +59,11 @@ public class CustomExceptionHandler {
 	public ResponseEntity<?> userAlreadyExistsExceptionHandling() {
 		return new ResponseEntity<>(new ExceptionBody(ErrorCode.OO_USER_ALREADY_EXISTS, new Date()),
 				HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(ExpiredJwtException.class)
+	public ResponseEntity<?> expiredJwtExceptionHandling() {
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	}
 
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
