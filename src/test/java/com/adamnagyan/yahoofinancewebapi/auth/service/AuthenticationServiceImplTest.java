@@ -1,4 +1,4 @@
-package com.adamnagyan.yahoofinancewebapi.services.auth;
+package com.adamnagyan.yahoofinancewebapi.auth.service;
 
 import com.adamnagyan.yahoofinancewebapi.auth.dto.AuthenticationRequestDto;
 import com.adamnagyan.yahoofinancewebapi.auth.dto.AuthenticationResponseDto;
@@ -6,10 +6,6 @@ import com.adamnagyan.yahoofinancewebapi.auth.dto.RegisterRequestDto;
 import com.adamnagyan.yahoofinancewebapi.auth.mapper.AuthenticationRequestMapper;
 import com.adamnagyan.yahoofinancewebapi.auth.model.Role;
 import com.adamnagyan.yahoofinancewebapi.auth.model.User;
-import com.adamnagyan.yahoofinancewebapi.auth.service.AuthenticationServiceImpl;
-import com.adamnagyan.yahoofinancewebapi.auth.service.ConfirmationTokenService;
-import com.adamnagyan.yahoofinancewebapi.auth.service.JwtService;
-import com.adamnagyan.yahoofinancewebapi.auth.service.UserService;
 import com.adamnagyan.yahoofinancewebapi.common.exceptions.UserAlreadyExistAuthenticationException;
 import org.junit.Assert;
 import org.junit.Before;

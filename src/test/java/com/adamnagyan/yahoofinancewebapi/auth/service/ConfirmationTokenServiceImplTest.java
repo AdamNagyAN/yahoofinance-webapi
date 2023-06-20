@@ -1,12 +1,9 @@
-package com.adamnagyan.yahoofinancewebapi.services.auth;
+package com.adamnagyan.yahoofinancewebapi.auth.service;
 
 import com.adamnagyan.yahoofinancewebapi.auth.model.ConfirmationToken;
 import com.adamnagyan.yahoofinancewebapi.auth.model.Role;
 import com.adamnagyan.yahoofinancewebapi.auth.model.User;
 import com.adamnagyan.yahoofinancewebapi.auth.respository.ConfirmationTokenRepository;
-import com.adamnagyan.yahoofinancewebapi.auth.service.ConfirmationTokenService;
-import com.adamnagyan.yahoofinancewebapi.auth.service.ConfirmationTokenServiceImpl;
-import com.adamnagyan.yahoofinancewebapi.auth.service.UserService;
 import com.adamnagyan.yahoofinancewebapi.common.exceptions.ConfirmationTokenExpiredException;
 import com.adamnagyan.yahoofinancewebapi.common.exceptions.UserIsAlreadyEnabledException;
 import com.adamnagyan.yahoofinancewebapi.common.services.EmailService;
