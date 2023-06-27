@@ -26,7 +26,7 @@ public class FinancialStatementsServiceImpl implements FinancialStatementsServic
 			throw new BadRequestException("symbol", "Symbol was not found!");
 		}
 		return financialStatementsMapper.toFinancialDataDto(0, stockRepository.getIncomeStatements(stock.getSymbol()),
-				stockRepository.getCashFlowStatements(stock.getSymbol()),
+				stockRepository.getCashflowStatements(stock.getSymbol()),
 				stockRepository.getBalanceSheets(stock.getSymbol()));
 	}
 

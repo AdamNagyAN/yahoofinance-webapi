@@ -42,7 +42,7 @@ public class StockController {
 	@GetMapping("dividend-history")
 	@ResponseStatus(HttpStatus.OK)
 	public DividendHistoryDto getDividendHistoryBySymbol(@PathVariable("symbol") String symbol,
-																											 @RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
+			@RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
 		if (timeFrame == null) {
 			return dividendHistoryService.findStockByTicker(symbol);
 		}
@@ -52,7 +52,7 @@ public class StockController {
 	@GetMapping("dividend-percentage-history")
 	@ResponseStatus(HttpStatus.OK)
 	public DividendPercentageHistoryDto getDividendPercentageHistory(@PathVariable("symbol") String symbol,
-																																	 @RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
+			@RequestParam(required = false) String timeFrame) throws IOException, BadRequestException {
 		if (timeFrame == null) {
 			return dividendPercentageHistoryService.getDividendPercentageHistoryDto(symbol, "max");
 		}

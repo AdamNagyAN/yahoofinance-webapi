@@ -1,209 +1,147 @@
 package com.adamnagyan.yahoofinancewebapi.stock.repository;
 
+import com.adamnagyan.yahoofinancewebapi.common.exceptions.BaseAppExceptionFactory;
 import com.adamnagyan.yahoofinancewebapi.stock.model.StockBalanceSheet;
 import com.adamnagyan.yahoofinancewebapi.stock.model.StockCashflowStatement;
+import com.adamnagyan.yahoofinancewebapi.stock.model.StockFinancialStatementsInterval;
 import com.adamnagyan.yahoofinancewebapi.stock.model.StockIncomeStatement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
-@RequiredArgsConstructor
+@Slf4j
 public class StockRepositoryImpl implements StockRepository {
 
-  private final RestTemplate restTemplate;
+	public static final String YH_FINANCE_ERROR_DESCRIPTION_PATH = "/quoteSummary/error/description";
 
-  private final ObjectMapper objectMapper;
+	public static final String CASHFLOW_STATEMENT_YEARLY_JSON_PATH = "/quoteSummary/result/0/cashflowStatementHistory/cashflowStatements";
 
-  @Value("${external-apis.yahoofinance-cashflow}")
-  private String cashFlowStatementApi;
+	public static final String CASHFLOW_STATEMENT_QUARTERLY_JSON_PATH = "/quoteSummary/result/0/cashflowStatementHistoryQuarterly/cashflowStatements";
 
-  @Value("${external-apis.yahoofinance-cashflow-quarterly}")
-  private String cashFlowStatementQuarterlyApi;
+	public static final String INCOME_STATEMENT_YEARLY_JSON_PATH = "/quoteSummary/result/0/incomeStatementHistory/incomeStatementHistory";
 
-  @Value("${external-apis.yahoofinance-income-statements}")
-  private String incomeStatementsApi;
+	public static final String INCOME_STATEMENT_QUARTERLY_JSON_PATH = "/quoteSummary/result/0/incomeStatementHistoryQuarterly/incomeStatementHistory";
 
-  @Value("${external-apis.yahoofinance-income-statements-quarterly}")
-  private String incomeStatementsQuarterlyApi;
+	public static final String BALANCE_SHEET_YEARLY_JSON_PATH = "/quoteSummary/result/0/balanceSheetHistory/balanceSheetStatements";
 
-  @Value("${external-apis.yahoofinance-balance-sheet}")
-  private String balanceSheetApi;
+	public static final String BALANCE_SHEET_QUARTERLY_JSON_PATH = "/quoteSummary/result/0/balanceSheetHistoryQuarterly/balanceSheetStatements";
 
-  @Value("${external-apis.yahoofinance-balance-sheet-quarterly}")
-  private String balanceSheetQuarterlyApi;
+	private final RestTemplate restTemplate;
 
-  @Override
-  @SneakyThrows
-  public List<StockCashflowStatement> getCashFlowStatements(String symbol) {
-    String annualRequestUrl = UriComponentsBuilder.fromHttpUrl(cashFlowStatementApi)
-            .buildAndExpand(symbol)
-            .toUriString();
-    String quarterlyRequestUrl = UriComponentsBuilder.fromHttpUrl(cashFlowStatementQuarterlyApi)
-            .buildAndExpand(symbol)
-            .toUriString();
-    ResponseEntity<String> annualResponse = restTemplate.getForEntity(annualRequestUrl, String.class);
-    ResponseEntity<String> quarterlyResponse = restTemplate.getForEntity(quarterlyRequestUrl, String.class);
+	private final ObjectMapper objectMapper;
 
-    if ((annualResponse.getStatusCode() == HttpStatus.OK) && quarterlyResponse.getStatusCode() == HttpStatus.OK) {
-      JsonNode annualJson = objectMapper.readTree(annualResponse.getBody());
-      JsonNode quarterlyJson = objectMapper.readTree(quarterlyResponse.getBody());
-      ArrayNode cashFlowStatements = (ArrayNode) annualJson.get("quoteSummary")
-              .get("result")
-              .get(0)
-              .get("cashflowStatementHistory")
-              .get("cashflowStatements");
-      ArrayNode quarterlyCashFlowStatements = (ArrayNode) quarterlyJson.get("quoteSummary")
-              .get("result")
-              .get(0)
-              .get("cashflowStatementHistoryQuarterly")
-              .get("cashflowStatements");
+	@Value("${external-apis.yahoofinance-cashflow}")
+	private String cashFlowStatementApi;
 
-      Optional<StockCashflowStatement> ttmCashFlowStatements = parseCashflowStatementsFromJson(
-              quarterlyCashFlowStatements)
-              .stream()
-              .reduce(StockCashflowStatement::add);
+	@Value("${external-apis.yahoofinance-cashflow-quarterly}")
+	private String cashFlowStatementQuarterlyApi;
 
-      List<StockCashflowStatement> result = parseCashflowStatementsFromJson(cashFlowStatements);
-      ttmCashFlowStatements.ifPresent(stockCashflowStatements -> result.add(0, stockCashflowStatements));
-      return result;
-    }
-    return new ArrayList<>();
-  }
+	@Value("${external-apis.yahoofinance-income-statements}")
+	private String incomeStatementsApi;
 
-  private List<StockCashflowStatement> parseCashflowStatementsFromJson(ArrayNode cashFlowStatements) {
-    List<StockCashflowStatement> stockCashFlowStatementList = new ArrayList<>();
-    for (JsonNode item : cashFlowStatements) {
-      Map<String, Long> jsonWithRawValues = extractRowValueFromEntries(item);
-      StockCashflowStatement translatedObject = objectMapper.convertValue(jsonWithRawValues,
-              StockCashflowStatement.class);
-      translatedObject.setFreeCashFlow(
-              translatedObject.getTotalCashFromOperatingActivities() + translatedObject.getCapitalExpenditures());
-      stockCashFlowStatementList.add(translatedObject);
-    }
-    return stockCashFlowStatementList;
-  }
+	@Value("${external-apis.yahoofinance-income-statements-quarterly}")
+	private String incomeStatementsQuarterlyApi;
 
-  private Map<String, Long> extractRowValueFromEntries(JsonNode item) {
-    Map<String, Long> jsonWithRawValues = new HashMap<>();
-    item.fields().forEachRemaining(entry -> {
-      JsonNode value = entry.getValue();
-      if (value.has("raw")) {
-        if (entry.getKey().equals("endDate")) {
-          jsonWithRawValues.put(entry.getKey(), value.get("raw").asLong() * 1000);
-          return;
-        }
-        jsonWithRawValues.put(entry.getKey(), value.get("raw").asLong());
-      }
-    });
-    return jsonWithRawValues;
-  }
+	@Value("${external-apis.yahoofinance-balance-sheet}")
+	private String balanceSheetApi;
 
-  @Override
-  @SneakyThrows
-  public List<StockIncomeStatement> getIncomeStatements(String symbol) {
-    String annualRequestUrl = UriComponentsBuilder.fromHttpUrl(incomeStatementsApi)
-            .buildAndExpand(symbol)
-            .toUriString();
-    String quarterlyRequestUrl = UriComponentsBuilder.fromHttpUrl(incomeStatementsQuarterlyApi)
-            .buildAndExpand(symbol)
-            .toUriString();
+	@Value("${external-apis.yahoofinance-balance-sheet-quarterly}")
+	private String balanceSheetQuarterlyApi;
 
-    ResponseEntity<String> annualResponse = restTemplate.getForEntity(annualRequestUrl, String.class);
-    ResponseEntity<String> quarterlyResponse = restTemplate.getForEntity(quarterlyRequestUrl, String.class);
-    if ((annualResponse.getStatusCode() == HttpStatus.OK) && quarterlyResponse.getStatusCode() == HttpStatus.OK) {
-      JsonNode annualJson = objectMapper.readTree(annualResponse.getBody());
-      JsonNode quarterlyJson = objectMapper.readTree(quarterlyResponse.getBody());
-      ArrayNode incomeStatements = (ArrayNode) annualJson.get("quoteSummary")
-              .get("result")
-              .get(0)
-              .get("incomeStatementHistory")
-              .get("incomeStatementHistory");
-      ArrayNode quarterlyIncomeStatements = (ArrayNode) quarterlyJson.get("quoteSummary")
-              .get("result")
-              .get(0)
-              .get("incomeStatementHistoryQuarterly")
-              .get("incomeStatementHistory");
+	public StockRepositoryImpl(RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+		this.restTemplate = restTemplateBuilder.errorHandler(new ResponseErrorHandler() {
+			@Override
+			public boolean hasError(ClientHttpResponse response) throws IOException {
+				return false;
+			}
 
-      Optional<StockIncomeStatement> ttmIncomeStatements = parseStockIncomeStatementsFromJson(
-              quarterlyIncomeStatements)
-              .stream()
-              .reduce(StockIncomeStatement::add);
+			@Override
+			public void handleError(ClientHttpResponse response) throws IOException {
+			}
+		}).build();
+	}
 
-      List<StockIncomeStatement> result = parseStockIncomeStatementsFromJson(incomeStatements);
-      ttmIncomeStatements.ifPresent(stockIncomeStatement -> result.add(0, stockIncomeStatement));
-      return result;
-    }
-    return new ArrayList<>();
-  }
+	@Override
+	public List<StockCashflowStatement> getCashflowStatements(String symbol) {
+		return this.getCashflowStatements(symbol, StockFinancialStatementsInterval.YEARLY);
+	}
 
-  @Override
-  @SneakyThrows
-  public List<StockBalanceSheet> getBalanceSheets(String symbol) {
-    String annualRequestUrl = UriComponentsBuilder.fromHttpUrl(balanceSheetApi)
-            .buildAndExpand(symbol)
-            .toUriString();
-    String quarterlyRequestUrl = UriComponentsBuilder.fromHttpUrl(balanceSheetQuarterlyApi)
-            .buildAndExpand(symbol)
-            .toUriString();
-    ResponseEntity<String> annualResponse = restTemplate.getForEntity(annualRequestUrl, String.class);
-    ResponseEntity<String> quarterlyResponse = restTemplate.getForEntity(quarterlyRequestUrl, String.class);
-    if ((annualResponse.getStatusCode() == HttpStatus.OK) && quarterlyResponse.getStatusCode() == HttpStatus.OK) {
-      JsonNode annualJson = objectMapper.readTree(annualResponse.getBody());
-      JsonNode quarterlyJson = objectMapper.readTree(quarterlyResponse.getBody());
-      ArrayNode balanceSheets = (ArrayNode) annualJson.get("quoteSummary")
-              .get("result")
-              .get(0)
-              .get("balanceSheetHistory")
-              .get("balanceSheetStatements");
-      ArrayNode quarterlyBalanceSheets = (ArrayNode) quarterlyJson.get("quoteSummary")
-              .get("result")
-              .get(0)
-              .get("balanceSheetHistoryQuarterly")
-              .get("balanceSheetStatements");
-      List<StockBalanceSheet> stockBalanceSheetsList = new ArrayList<>();
+	@Override
+	public List<StockCashflowStatement> getCashflowStatements(String symbol,
+			StockFinancialStatementsInterval interval) {
+		if (interval == StockFinancialStatementsInterval.QUARTERLY) {
+			return getStatements(symbol, cashFlowStatementQuarterlyApi, CASHFLOW_STATEMENT_QUARTERLY_JSON_PATH,
+					StockCashflowStatement.class);
+		}
+		return getStatements(symbol, cashFlowStatementApi, CASHFLOW_STATEMENT_YEARLY_JSON_PATH,
+				StockCashflowStatement.class);
+	}
 
-      StockBalanceSheet ttmBalanceSheet = null;
+	@Override
+	public List<StockBalanceSheet> getBalanceSheets(String symbol) {
+		return getBalanceSheets(symbol, StockFinancialStatementsInterval.YEARLY);
+	}
 
-      for (JsonNode item : quarterlyBalanceSheets) {
-        StockBalanceSheet convertedValue = objectMapper.convertValue(item, StockBalanceSheet.class);
-        if (ttmBalanceSheet == null) {
-          ttmBalanceSheet = convertedValue;
-        } else {
-          ttmBalanceSheet.add(convertedValue);
-        }
-      }
+	@Override
+	public List<StockBalanceSheet> getBalanceSheets(String symbol, StockFinancialStatementsInterval interval) {
+		if (interval == StockFinancialStatementsInterval.QUARTERLY) {
+			return getStatements(symbol, balanceSheetQuarterlyApi, BALANCE_SHEET_QUARTERLY_JSON_PATH,
+					StockBalanceSheet.class);
+		}
+		return getStatements(symbol, balanceSheetApi, BALANCE_SHEET_YEARLY_JSON_PATH, StockBalanceSheet.class);
+	}
 
-      for (JsonNode item : balanceSheets) {
-        stockBalanceSheetsList.add(objectMapper.convertValue(item, StockBalanceSheet.class));
-      }
+	@Override
+	public List<StockIncomeStatement> getIncomeStatements(String symbol) {
+		return getIncomeStatements(symbol, StockFinancialStatementsInterval.YEARLY);
+	}
 
-      stockBalanceSheetsList.add(0, ttmBalanceSheet);
+	@Override
+	public List<StockIncomeStatement> getIncomeStatements(String symbol, StockFinancialStatementsInterval interval) {
+		if (interval == StockFinancialStatementsInterval.QUARTERLY) {
+			return getStatements(symbol, incomeStatementsQuarterlyApi, INCOME_STATEMENT_QUARTERLY_JSON_PATH,
+					StockIncomeStatement.class);
+		}
+		return getStatements(symbol, incomeStatementsApi, INCOME_STATEMENT_YEARLY_JSON_PATH,
+				StockIncomeStatement.class);
+	}
 
-      return stockBalanceSheetsList;
-    }
-    return new ArrayList<>();
-  }
+	private <T> List<T> getStatements(String symbol, String apiUrl, String jsonPath, Class<T> clazz) {
+		String requestUrl = UriComponentsBuilder.fromHttpUrl(apiUrl).buildAndExpand(symbol).toUriString();
+		log.info("Requesting statements from {}", requestUrl);
+		ResponseEntity<JsonNode> response = restTemplate.getForEntity(requestUrl, JsonNode.class);
+		if (!response.getStatusCode().is2xxSuccessful()) {
+			Optional<String> description = Optional
+				.ofNullable(response.getBody().findPath(YH_FINANCE_ERROR_DESCRIPTION_PATH).asText());
+			if (description.isEmpty()) {
+				BaseAppExceptionFactory.externalService();
+			}
+			BaseAppExceptionFactory.externalService(description.get(), response.getStatusCodeValue());
+		}
+		log.info("Response: {}", response.getBody());
+		Iterator<JsonNode> body = response.getBody().at(jsonPath).elements();
 
-  private List<StockIncomeStatement> parseStockIncomeStatementsFromJson(ArrayNode stockIncomeStatementJson) {
-    List<StockIncomeStatement> stockIncomeStatementList = new ArrayList<>();
-    for (JsonNode item : stockIncomeStatementJson) {
-      Map<String, Long> jsonWithRawValues = extractRowValueFromEntries(item);
-      StockIncomeStatement translatedObject = objectMapper.convertValue(jsonWithRawValues,
-              StockIncomeStatement.class);
-      stockIncomeStatementList.add(translatedObject);
-    }
-    return stockIncomeStatementList;
-  }
+		List<T> result = new ArrayList<>();
+		body.forEachRemaining(item -> result.add(objectMapper.convertValue(item, clazz)));
+		log.info("JSON {} : {}", jsonPath, result);
+
+		return result;
+	}
 
 }

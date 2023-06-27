@@ -5,5 +5,7 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface BaseAppExceptionMapper {
-  ExceptionDto toExceptionDto(BaseAppException baseAppException);
+
+	ExceptionDto toExceptionDto(BaseAppException baseAppException);
+
 }

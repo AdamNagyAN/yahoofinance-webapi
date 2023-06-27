@@ -22,6 +22,7 @@ import java.util.List;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class CustomExceptionHandler {
+
 	private final BaseAppExceptionMapper baseAppExceptionMapper;
 
 	@ExceptionHandler(BadRequestException.class)
@@ -38,10 +39,8 @@ public class CustomExceptionHandler {
 
 	@ExceptionHandler(BaseAppException.class)
 	public ResponseEntity<?> baseAppExceptionHandling(BaseAppException ex) {
-		return new ResponseEntity<>(baseAppExceptionMapper.toExceptionDto(ex), ex.getHttpStatus());
+		return new ResponseEntity<>(baseAppExceptionMapper.toExceptionDto(ex), HttpStatus.valueOf(ex.getHttpStatus()));
 	}
-
-
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)

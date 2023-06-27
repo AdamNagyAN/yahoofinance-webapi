@@ -3,8 +3,6 @@ package com.adamnagyan.yahoofinancewebapi.stock.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @Builder
@@ -14,60 +12,36 @@ import java.util.Date;
 @ToString
 public class StockCashflowStatement {
 
-	private Date endDate;
+	private StatementValue endDate;
 
-	private Long totalCashFromOperatingActivities = 0L;
+	private StatementValue totalCashFromOperatingActivities = new StatementValue();
 
-	private Long netIncome = 0L;
+	private StatementValue netIncome = new StatementValue();
 
-	private Long totalCashflowsFromInvestingActivities = 0L;
+	private StatementValue totalCashflowsFromInvestingActivities = new StatementValue();
 
-	private Long otherCashflowsFromInvestingActivities = 0L;
+	private StatementValue otherCashflowsFromInvestingActivities = new StatementValue();
 
-	private Long totalCashFromFinancingActivities = 0L;
+	private StatementValue totalCashFromFinancingActivities = new StatementValue();
 
-	private Long otherCashflowsFromFinancingActivities = 0L;
+	private StatementValue otherCashflowsFromFinancingActivities = new StatementValue();
 
-	private Long depreciation = 0L;
+	private StatementValue depreciation = new StatementValue();
 
-	private Long capitalExpenditures = 0L;
+	private StatementValue capitalExpenditures = new StatementValue();
 
-	private Long investments = 0L;
+	private StatementValue investments = new StatementValue();
 
-	private Long dividendsPaid = 0L;
+	private StatementValue dividendsPaid = new StatementValue();
 
-	private Long netBorrowings = 0L;
+	private StatementValue netBorrowings = new StatementValue();
 
-	private Long effectOfExchangeRate = 0L;
+	private StatementValue effectOfExchangeRate = new StatementValue();
 
-	private Long changeInCash = 0L;
+	private StatementValue changeInCash = new StatementValue();
 
-	private Long issuanceOfStock = 0L;
+	private StatementValue issuanceOfStock = new StatementValue();
 
-	private Long freeCashFlow = 0L;
-
-	public StockCashflowStatement add(StockCashflowStatement that) {
-		return StockCashflowStatement.builder()
-			.endDate(this.endDate)
-			.totalCashFromOperatingActivities(
-					this.totalCashFromOperatingActivities + that.totalCashFromOperatingActivities)
-			.netIncome(this.netIncome + that.netIncome)
-			.totalCashflowsFromInvestingActivities(
-					this.totalCashflowsFromInvestingActivities + that.totalCashflowsFromInvestingActivities)
-			.otherCashflowsFromInvestingActivities(
-					this.otherCashflowsFromInvestingActivities + that.otherCashflowsFromInvestingActivities)
-			.totalCashFromFinancingActivities(
-					this.totalCashFromFinancingActivities + that.totalCashFromFinancingActivities)
-			.depreciation(this.depreciation + that.depreciation)
-			.capitalExpenditures(this.capitalExpenditures + that.capitalExpenditures)
-			.investments(this.investments + that.investments)
-			.dividendsPaid(this.dividendsPaid + that.dividendsPaid)
-			.netBorrowings(this.netBorrowings + that.netBorrowings)
-			.effectOfExchangeRate(this.effectOfExchangeRate + that.effectOfExchangeRate)
-			.changeInCash(this.changeInCash + that.changeInCash)
-			.issuanceOfStock(this.issuanceOfStock + that.issuanceOfStock)
-			.freeCashFlow(this.freeCashFlow + that.freeCashFlow)
-			.build();
-	}
+	private StatementValue freeCashFlow = new StatementValue();
 
 }

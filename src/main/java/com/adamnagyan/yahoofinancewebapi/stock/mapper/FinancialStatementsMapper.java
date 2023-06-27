@@ -4,6 +4,7 @@ import com.adamnagyan.yahoofinancewebapi.stock.dto.BalanceSheetDto;
 import com.adamnagyan.yahoofinancewebapi.stock.dto.CashflowStatementDto;
 import com.adamnagyan.yahoofinancewebapi.stock.dto.FinancialDataDto;
 import com.adamnagyan.yahoofinancewebapi.stock.dto.IncomeStatementDto;
+import com.adamnagyan.yahoofinancewebapi.stock.model.StatementValue;
 import com.adamnagyan.yahoofinancewebapi.stock.model.StockBalanceSheet;
 import com.adamnagyan.yahoofinancewebapi.stock.model.StockCashflowStatement;
 import com.adamnagyan.yahoofinancewebapi.stock.model.StockIncomeStatement;
@@ -58,8 +59,16 @@ public interface FinancialStatementsMapper {
 
 	List<CashflowStatementDto> toCashflowStatementListDto(List<StockCashflowStatement> cashFlowStatements);
 
+	@Mapping(target = "endDate",
+			expression = "java(Instant.ofEpochMilli(incomeStatement.getEndDate().getRaw() * 1000).atZone(ZoneId.systemDefault()).toLocalDate())")
 	IncomeStatementDto toIncomeStatementDto(StockIncomeStatement incomeStatement);
 
+	@Mapping(target = "endDate",
+			expression = "java(Instant.ofEpochMilli(cashFlowStatement.getEndDate().getRaw() * 1000).atZone(ZoneId.systemDefault()).toLocalDate())")
 	CashflowStatementDto toCashflowStatementDto(StockCashflowStatement cashFlowStatement);
+
+	default Long map(StatementValue value) {
+		return value.getRaw();
+	}
 
 }

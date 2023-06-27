@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ExceptionDto {
-  private String code;
-  private Integer httpStatus;
-  private Map<String, Object> attributes = new HashMap<>();
+
+	private String code;
+
+	private Integer httpStatus;
+
+	private Map<String, Object> attributes = new HashMap<>();
+
 }
