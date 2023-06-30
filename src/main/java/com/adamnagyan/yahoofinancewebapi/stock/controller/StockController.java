@@ -2,6 +2,7 @@ package com.adamnagyan.yahoofinancewebapi.stock.controller;
 
 import com.adamnagyan.yahoofinancewebapi.common.exceptions.BadRequestException;
 import com.adamnagyan.yahoofinancewebapi.stock.dto.*;
+import com.adamnagyan.yahoofinancewebapi.stock.model.StockQuote;
 import com.adamnagyan.yahoofinancewebapi.stock.service.DividendHistoryService;
 import com.adamnagyan.yahoofinancewebapi.stock.service.DividendPercentageHistoryService;
 import com.adamnagyan.yahoofinancewebapi.stock.service.FinancialStatementsService;
@@ -28,7 +29,7 @@ public class StockController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public StockSummaryDto getStockSummaryBySymbol(@PathVariable("symbol") String symbol)
+	public StockQuote getStockSummaryBySymbol(@PathVariable("symbol") String symbol)
 			throws IOException, BadRequestException {
 		return stockSummaryService.getStockSummary(symbol);
 	}
@@ -61,7 +62,7 @@ public class StockController {
 
 	@GetMapping("financials")
 	@ResponseStatus(HttpStatus.OK)
-	public FinancialDataDto getCashFlowStatement(@PathVariable("symbol") String symbol) {
+	public FinancialDataDto getFinancialData(@PathVariable("symbol") String symbol) {
 		return financialStatementsService.getFinancialData(symbol);
 	}
 

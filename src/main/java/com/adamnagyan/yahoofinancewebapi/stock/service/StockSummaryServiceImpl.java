@@ -1,12 +1,11 @@
 package com.adamnagyan.yahoofinancewebapi.stock.service;
 
 import com.adamnagyan.yahoofinancewebapi.common.exceptions.BadRequestException;
-import com.adamnagyan.yahoofinancewebapi.stock.dto.StockSummaryDto;
 import com.adamnagyan.yahoofinancewebapi.stock.mapper.StockSummaryMapper;
+import com.adamnagyan.yahoofinancewebapi.stock.model.StockQuote;
+import com.adamnagyan.yahoofinancewebapi.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import yahoofinance.Stock;
-import yahoofinance.YahooFinance;
 
 import java.io.IOException;
 
@@ -15,14 +14,15 @@ import java.io.IOException;
 public class StockSummaryServiceImpl implements StockSummaryService {
 
 	private final StockSummaryMapper stockSummaryMapper;
+	private final StockRepository stockRepository;
 
 	@Override
-	public StockSummaryDto getStockSummary(String symbol) throws IOException, BadRequestException {
-		Stock stock = YahooFinance.get(symbol);
+	public StockQuote getStockSummary(String symbol) throws IOException, BadRequestException {
+		StockQuote stock = stockRepository.getStockQuote(symbol);
 		if (stock == null) {
 			throw new BadRequestException("symbol", "Symbol was not found");
 		}
-		return stockSummaryMapper.stockToStockSummaryDto(stock, stock.getStats(true), stock.getDividend());
+		return stock;
 	}
 
 }

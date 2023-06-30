@@ -20,52 +20,66 @@ import java.util.List;
 @ActiveProfiles("dev")
 public class StockRepositoryIT {
 
-	@Autowired
-	private StockRepositoryImpl stockRepositoryImpl;
+  @Autowired
+  private StockRepositoryImpl stockRepositoryImpl;
 
-	@Test
-	public void getStockCashFlowStatements() {
-		List<StockCashflowStatement> resultYearly = stockRepositoryImpl.getCashflowStatements("CVX",
-				StockFinancialStatementsInterval.YEARLY);
-		Assertions.assertEquals(4, resultYearly.size());
-		List<StockCashflowStatement> resultQuarterly = stockRepositoryImpl.getCashflowStatements("CVX",
-				StockFinancialStatementsInterval.QUARTERLY);
-		Assertions.assertEquals(4, resultQuarterly.size());
-	}
+  @Test
+  public void getStockQuote() {
+    Assertions.assertNotNull(stockRepositoryImpl.getStockQuote("CVX"));
+  }
+  @Test
+  public void getStockQuoteWithInvalidStock() {
+    Assertions.assertNull(stockRepositoryImpl.getStockQuote("asdasdasd"));
+  }
 
-	@Test(expected = BaseAppException.class)
-	public void getStockCashFlowStatementsWithInvalidStock() {
-		stockRepositoryImpl.getCashflowStatements("asdasdasd", StockFinancialStatementsInterval.YEARLY);
-	}
+  @Test
+  public void getStockCashFlowStatements() {
+    List<StockCashflowStatement> resultYearly = stockRepositoryImpl.getCashflowStatements("CVX",
+            StockFinancialStatementsInterval.YEARLY);
+    Assertions.assertEquals(4, resultYearly.size());
+    List<StockCashflowStatement> resultQuarterly = stockRepositoryImpl.getCashflowStatements("CVX",
+            StockFinancialStatementsInterval.QUARTERLY);
+    Assertions.assertEquals(4, resultQuarterly.size());
+  }
 
-	@Test
-	public void getBalanceSheet() {
-		List<StockBalanceSheet> resultYearly = stockRepositoryImpl.getBalanceSheets("CVX",
-				StockFinancialStatementsInterval.YEARLY);
-		Assertions.assertEquals(4, resultYearly.size());
-		List<StockBalanceSheet> resultQuarterly = stockRepositoryImpl.getBalanceSheets("CVX",
-				StockFinancialStatementsInterval.QUARTERLY);
-		Assertions.assertEquals(4, resultQuarterly.size());
-	}
+  @Test(expected = BaseAppException.class)
+  public void getStockCashFlowStatementsWithInvalidStock() {
+    stockRepositoryImpl.getCashflowStatements("asdasdasd", StockFinancialStatementsInterval.YEARLY);
+  }
 
-	@Test(expected = BaseAppException.class)
-	public void getBalanceSheetsWithInvalidStock() {
-		stockRepositoryImpl.getCashflowStatements("asdasdasd", StockFinancialStatementsInterval.YEARLY);
-	}
+  @Test
+  public void getBalanceSheet() {
+    List<StockBalanceSheet> resultYearly = stockRepositoryImpl.getBalanceSheets("CVX",
+            StockFinancialStatementsInterval.YEARLY);
+    Assertions.assertEquals(4, resultYearly.size());
+    List<StockBalanceSheet> resultQuarterly = stockRepositoryImpl.getBalanceSheets("CVX",
+            StockFinancialStatementsInterval.QUARTERLY);
+    Assertions.assertEquals(4, resultQuarterly.size());
+  }
 
-	@Test
-	public void getIncomeStatements() {
-		List<StockIncomeStatement> resultYearly = stockRepositoryImpl.getIncomeStatements("CVX",
-				StockFinancialStatementsInterval.YEARLY);
-		Assertions.assertEquals(4, resultYearly.size());
-		List<StockIncomeStatement> resultQuarterly = stockRepositoryImpl.getIncomeStatements("CVX",
-				StockFinancialStatementsInterval.QUARTERLY);
-		Assertions.assertEquals(4, resultQuarterly.size());
-	}
+  @Test(expected = BaseAppException.class)
+  public void getBalanceSheetsWithInvalidStock() {
+    stockRepositoryImpl.getCashflowStatements("asdasdasd", StockFinancialStatementsInterval.YEARLY);
+  }
 
-	@Test(expected = BaseAppException.class)
-	public void getIncomeStatementsWithInvalidStock() {
-		stockRepositoryImpl.getCashflowStatements("asdasdasd", StockFinancialStatementsInterval.YEARLY);
-	}
+  @Test
+  public void getIncomeStatements() {
+    List<StockIncomeStatement> resultYearly = stockRepositoryImpl.getIncomeStatements("CVX",
+            StockFinancialStatementsInterval.YEARLY);
+    Assertions.assertEquals(4, resultYearly.size());
+    List<StockIncomeStatement> resultQuarterly = stockRepositoryImpl.getIncomeStatements("CVX",
+            StockFinancialStatementsInterval.QUARTERLY);
+    Assertions.assertEquals(4, resultQuarterly.size());
+  }
+
+  @Test(expected = BaseAppException.class)
+  public void getIncomeStatementsWithInvalidStock() {
+    stockRepositoryImpl.getCashflowStatements("asdasdasd", StockFinancialStatementsInterval.YEARLY);
+  }
+
+  @Test
+  public void getDividendHistory(){
+    stockRepositoryImpl.getDividends("CVX");
+  }
 
 }

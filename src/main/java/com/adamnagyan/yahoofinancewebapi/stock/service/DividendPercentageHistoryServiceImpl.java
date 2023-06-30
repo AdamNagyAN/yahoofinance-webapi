@@ -7,6 +7,7 @@ import com.adamnagyan.yahoofinancewebapi.stock.dto.DividendPercentageHistoryDto;
 import com.adamnagyan.yahoofinancewebapi.stock.dto.PriceDto;
 import com.adamnagyan.yahoofinancewebapi.stock.mapper.DividendPercentageHistoryMapper;
 import com.adamnagyan.yahoofinancewebapi.stock.model.StockTimeFrames;
+import com.adamnagyan.yahoofinancewebapi.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,6 +36,7 @@ public class DividendPercentageHistoryServiceImpl implements DividendPercentageH
 	private final DividendPercentageHistoryMapper dividendPercentageHistoryMapper;
 
 	private final DividendHistoryService dividendHistoryService;
+
 
 	private final ApplicationContext applicationContext;
 

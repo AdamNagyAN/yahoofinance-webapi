@@ -3,6 +3,7 @@ package com.adamnagyan.yahoofinancewebapi.stock.service;
 import com.adamnagyan.yahoofinancewebapi.common.exceptions.BadRequestException;
 import com.adamnagyan.yahoofinancewebapi.stock.dto.FinancialDataDto;
 import com.adamnagyan.yahoofinancewebapi.stock.mapper.FinancialStatementsMapper;
+import com.adamnagyan.yahoofinancewebapi.stock.model.StockQuote;
 import com.adamnagyan.yahoofinancewebapi.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -21,7 +22,7 @@ public class FinancialStatementsServiceImpl implements FinancialStatementsServic
 	@Override
 	@SneakyThrows
 	public FinancialDataDto getFinancialData(String symbol) {
-		Stock stock = YahooFinance.get(symbol);
+		StockQuote stock = stockRepository.getStockQuote(symbol);
 		if (stock == null) {
 			throw new BadRequestException("symbol", "Symbol was not found!");
 		}

@@ -1,12 +1,10 @@
 package com.adamnagyan.yahoofinancewebapi.stock.repository;
 
 import com.adamnagyan.yahoofinancewebapi.common.exceptions.BaseAppExceptionFactory;
-import com.adamnagyan.yahoofinancewebapi.stock.model.StockBalanceSheet;
-import com.adamnagyan.yahoofinancewebapi.stock.model.StockCashflowStatement;
-import com.adamnagyan.yahoofinancewebapi.stock.model.StockFinancialStatementsInterval;
-import com.adamnagyan.yahoofinancewebapi.stock.model.StockIncomeStatement;
+import com.adamnagyan.yahoofinancewebapi.stock.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -17,16 +15,17 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
 
 @Repository
 @Slf4j
 public class StockRepositoryImpl implements StockRepository {
-
+	public static final String STOCK_QUOTE = "/optionChain/result/0/quote";
 	public static final String YH_FINANCE_ERROR_DESCRIPTION_PATH = "/quoteSummary/error/description";
 
 	public static final String CASHFLOW_STATEMENT_YEARLY_JSON_PATH = "/quoteSummary/result/0/cashflowStatementHistory/cashflowStatements";
@@ -63,6 +62,12 @@ public class StockRepositoryImpl implements StockRepository {
 	@Value("${external-apis.yahoofinance-balance-sheet-quarterly}")
 	private String balanceSheetQuarterlyApi;
 
+	@Value("${external-apis.yahoofinance-quote}")
+	private String quoteApi;
+
+	@Value("${external-apis.yahoofinance-dividend_history}")
+	private String dividendHistoryApi;
+
 	public StockRepositoryImpl(RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 		this.restTemplate = restTemplateBuilder.errorHandler(new ResponseErrorHandler() {
@@ -75,6 +80,28 @@ public class StockRepositoryImpl implements StockRepository {
 			public void handleError(ClientHttpResponse response) throws IOException {
 			}
 		}).build();
+	}
+
+	@Override
+	public StockQuote getStockQuote(String symbol) {
+		String requestUrl = UriComponentsBuilder.fromHttpUrl(quoteApi).buildAndExpand(symbol).toUriString();
+		log.info("Requesting statements from {}", requestUrl);
+		ResponseEntity<JsonNode> response = restTemplate.getForEntity(requestUrl, JsonNode.class);
+		if (!response.getStatusCode().is2xxSuccessful()) {
+			Optional<String> description = Optional
+							.ofNullable(response.getBody().findPath(YH_FINANCE_ERROR_DESCRIPTION_PATH).asText());
+			if (description.isEmpty()) {
+				BaseAppExceptionFactory.externalService();
+			}
+			BaseAppExceptionFactory.externalService(description.get(), response.getStatusCodeValue());
+		}
+		log.info("Response: {}", response.getBody());
+		JsonNode body = response.getBody().at(STOCK_QUOTE);
+		if(body.isEmpty()){
+			return null;
+		}
+		StockQuote stockQuote = objectMapper.convertValue(body, StockQuote.class);
+		return stockQuote;
 	}
 
 	@Override
@@ -144,4 +171,23 @@ public class StockRepositoryImpl implements StockRepository {
 		return result;
 	}
 
+	@SneakyThrows
+	@Override
+	public List<StockDividend> getDividends(String symbol) {
+		URL requestUrl = UriComponentsBuilder.fromHttpUrl(dividendHistoryApi).buildAndExpand(symbol, 0, 9999999999L, "1d").toUri().toURL();
+		InputStreamReader inputStreamReader = new InputStreamReader(requestUrl.openConnection().getInputStream());
+
+		BufferedReader br = new BufferedReader(inputStreamReader);
+		String line = "";
+		String cvsSlitBy = ",";
+
+		while ((line = br.readLine()) != null) {
+			String[] dividend = line.split(cvsSlitBy);
+			System.out.println(Arrays.stream(dividend).toList());
+		}
+
+
+		log.info("Requesting dividend history from {}", requestUrl);
+		return null;
+	}
 }
